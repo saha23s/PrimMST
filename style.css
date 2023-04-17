@@ -1,0 +1,60 @@
+body{
+    text-align: center;
+}
+
+svg {
+    position: relative;
+    left: 30%;
+    display: block;
+}
+
+.vertex {
+    r: 10px;
+    stroke: black;
+    fill: white;
+    stroke-width: 4;
+}
+
+.vertex:hover {
+    fill: rgb(240, 160, 160);
+}
+
+.edge {
+    stroke: black;
+    stroke-width: 4px;
+}
+
+
+.weight {
+    font-size: 24px;
+    font-family: Arial;
+    fill: pink;
+}
+
+.muted {
+    stroke: rgb(200,200,200);
+}
+
+.highlight {
+    stroke: red;
+    stroke-width: 5;
+}
+
+/*************************************************************
+ * NEW SINCE LECTURE 08
+ *************************************************************/
+
+.overlay-vertex {
+    r: 15px;
+    stroke: yellow;
+    fill: rgb(0, 0, 0, 20%);
+    stroke-width: 5;
+    transition-property: cx, cy;
+    transition-duration: 500ms;
+    
+    /* some options: ease (default), ease-in, ease-out, ease-in-out, linear*/
+    transition-timing-function: linear;
+    /* transition-delay: 500ms; */
+}
+
+
