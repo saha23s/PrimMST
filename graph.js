@@ -216,6 +216,18 @@ function GraphVisualizer (graph, svg, text) {
 		elt.classList.add("vertex");
 		elt.setAttributeNS(null, "cx", vtx.x);
 		elt.setAttributeNS(null, "cy", vtx.y);
+		elt.setAttributeNS(null, "r", 10);
+		
+		//add text inside the circle
+		const text = document.createElementNS(SVG_NS, "text");
+		text.setAttributeNS(null, "x", vtx.x);
+		text.setAttributeNS(null, "y", vtx.y);
+		text.setAttributeNS(null, "text-anchor", "middle");
+		text.setAttributeNS(null, "dominant-baseline", "middle");
+		text.setAttributeNS(null, "font-size", "12");
+		text.setAttributeNS(null, "fill", "black");
+		text.setAttributeNS(null, "font-weight", "bold");
+		text.textContent = vtx.id;
 
 		elt.addEventListener("click", (e) => {
 			e.stopPropagation();
@@ -240,6 +252,7 @@ function GraphVisualizer (graph, svg, text) {
 	});
 
 	this.vertexGroup.appendChild(elt);
+	this.vertexGroup.appendChild(text);
 	this.vertexElts[vtx.id] = elt;
     }
 
@@ -420,6 +433,27 @@ function GraphVisualizer (graph, svg, text) {
 	this.unmuteAllEdges();
     }
         
+}
+
+//a function that runs the prims algorithm and returns the minimum spanning tree
+function prim(){
+	console.log("prim running");
+	//ask for start vertex, 
+	//if the graph has no vertex, then ask the user to add vertex first and return
+	if (graph.vertices.length == 0){
+		alert("Please add vertex first");
+		return;
+	}
+	else{
+		let start = prompt("Enter the start vertex");
+	}
+	//create a new graph
+	// let mst = new Graph(0);
+	// //create a new priority queue
+	// let pq = new PriorityQueue();
+	// //create a new set
+	// let set = new Set();
+	// //add the start vertex to the set
 }
 
 

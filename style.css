@@ -9,10 +9,10 @@ svg {
 }
 
 .vertex {
-    r: 10px;
+    
     stroke: black;
     fill: white;
-    stroke-width: 4;
+    stroke-width: 2;
 }
 
 .vertex:hover {
@@ -56,5 +56,7 @@ svg {
     transition-timing-function: linear;
     /* transition-delay: 500ms; */
 }
+
+
 
 
