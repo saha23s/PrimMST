@@ -216,7 +216,7 @@ function GraphVisualizer (graph, svg, text) {
 		elt.classList.add("vertex");
 		elt.setAttributeNS(null, "cx", vtx.x);
 		elt.setAttributeNS(null, "cy", vtx.y);
-		elt.setAttributeNS(null, "r", 10);
+		elt.setAttributeNS(null, "r", 12);
 		
 		//add text inside the circle
 		const text = document.createElementNS(SVG_NS, "text");
