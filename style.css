@@ -57,6 +57,12 @@ svg {
     /* transition-delay: 500ms; */
 }
 
+#clear-button{
+    /* center the button */
+    margin: 0 auto;
+
+}
+
 
 
 

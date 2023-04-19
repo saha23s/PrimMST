@@ -436,8 +436,11 @@ function GraphVisualizer (graph, svg, text) {
 }
 
 //a function that runs the prims algorithm and returns the minimum spanning tree
+//input: graph
+//output: minimum spanning tree
 function prim(){
 	console.log("prim running");
+	let startVertex = null; 
 	//ask for start vertex, 
 	//if the graph has no vertex, then ask the user to add vertex first and return
 	if (graph.vertices.length == 0){
@@ -445,15 +448,45 @@ function prim(){
 		return;
 	}
 	else{
-		let start = prompt("Enter the start vertex");
+		startVertex = prompt("Enter the start vertex");
 	}
-	//create a new graph
-	// let mst = new Graph(0);
-	// //create a new priority queue
-	// let pq = new PriorityQueue();
-	// //create a new set
-	// let set = new Set();
-	// //add the start vertex to the set
+
+	//access the vertices array in the graph
+	let allVertices = graph.vertices;
+	//access the edges array in the graph
+	let allEdges = graph.edges;
+
+	//array to store visited vertices
+	let visited = [];
+	visited.push(startVertex);
+
+	while ( visited.length != allVertices.length){
+		// check for the cheapest edge and add that vertex to the visited array
+		for ( let i = 0; i < visited.length; i++){
+
+			for ( let j = 1; j < currentEdges.length; j++){
+				let cheapestEdge = currentEdges[0];
+				let currentEdge = currentEdges[j];
+				//get the cheapest edge from all of the edges of the current vertex
+				if ( currentEdge.weight < cheapestEdge.weight){
+					cheapestEdge = currentEdge;
+					console.log(cheapestEdge);
+				}
+				//add the cheapest edge to the visited array
+				visited.push(cheapestEdge.vtx2);
+
+				console.log(visited);
+
+
+			}
+		}
+
+	}
+
+
+
+
+
 }
 
 
