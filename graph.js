@@ -445,8 +445,48 @@ function prim(){
 		return;
 	}
 	else{
-		let start = prompt("Enter the start vertex");
+		let start = parseInt(prompt("Enter the start vertex"));
+		for (let vtx of graph.vertices) {
+			if(vtx.id == start){
+				console.log("start vertex is " + start);
+				startNode = vtx;
+			}
+		}
+
+		//access the vertices array in the graph
+		let allVertices = graph.vertices;
+		let mst = new Graph(0);
+		mst.vertices.push(startNode);
+		let set = new Set();
+
+		let cheapestEdge = new Edge(0, 0, 0, Infinity);
+		while(mst.vertices.length != allVertices.length){
+			for (let vtx of startNode.neighbors) {
+				if(!set.has(graph.getEdge(vtx, startNode))){
+					set.add(graph.getEdge(vtx, startNode))
+				}
+			}
+			let MSTedges = Array.from(set);
+			for(let i=0; i<MSTedges.length; i++){
+				if(MSTedges[i].weight < cheapestEdge.weight){
+					cheapestEdge = MSTedges[i];
+				}
+			}
+			mst.edges.push(cheapestEdge);
+			set.delete(cheapestEdge);
+			if(cheapestEdge.vtx1 == startNode){
+				mst.vertices.push(cheapestEdge.vtx2);
+				startNode = cheapestEdge.vtx2;
+			}
+			else{
+				mst.vertices.push(cheapestEdge.vtx1);
+				startNode = cheapestEdge.vtx1;
+			}
+		}
+		console.log(mst.edges);
 	}
+
+	
 	//create a new graph
 	// let mst = new Graph(0);
 	// //create a new priority queue
