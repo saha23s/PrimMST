@@ -458,14 +458,19 @@ function GraphVisualizer (graph, svg, text) {
 //output: minimum spanning tree
 function prim(){
 	console.log("prim running"); 
-	//ask for start vertex, 
-	//if the graph has no vertex, then ask the user to add vertex first and return
+	
+	//fetch user input from the html page
+	let startVertex = document.getElementById("input-box").value;
+	console.log(startVertex);
+	
 	if (graph.vertices.length == 0){
-		alert("Please add vertex first");
+		alert("Add vertices first");
 		return;
 	}
-	else{
-		startVertex = prompt("Enter the start vertex");
+	else if (startVertex == ""){
+		alert("Enter a start vertex");
+		return;
+
 	}
 
 
@@ -492,7 +497,7 @@ function prim(){
 	let pq = new PriorityQueue();
 	let set = new Set();
 
-	while ( visited.length != graph.vertices.length ){
+	while ( graph.edges.length != 0 && visited.length != graph.vertices.length ){
 		console.log("enqueuing edges");
 		//enqueue all the edges that are connected to the start vertex 
 		for ( let i = 0; i < graph.edges.length; i++){
