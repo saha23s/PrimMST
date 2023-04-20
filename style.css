@@ -4,9 +4,12 @@ body{
 
 svg {
     position: relative;
-    left: 30%;
+    margin: 0 auto;
+
     display: block;
 }
+
+
 
 .vertex {
     
@@ -57,9 +60,11 @@ svg {
     /* transition-delay: 500ms; */
 }
 
-#clear-button{
-    /* center the button */
+#input-box{
+    
     margin: 0 auto;
+    margin-top: 20px;
+
 
 }
 
