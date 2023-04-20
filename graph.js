@@ -384,6 +384,22 @@ function GraphVisualizer (graph, svg, text) {
 	elt.classList.add("highlight");	
     }
 
+	this.highlightEdgePink = function (e) {
+		const elt = this.edgeElts[e.id];
+		elt.classList.add("highlight-pink");	
+	}
+
+	this.unhighlightEdgePink = function (e) {
+		const elt = this.edgeElts[e.id];
+		elt.classList.remove("highlight-pink");	
+	}
+
+	this.unhighlightAllPinkEdges = function () {
+		for (e of this.graph.edges) {
+			this.unhighlightEdgePink(e);
+		}
+	}
+
     this.unhighlightEdge = function (e) {
 	const elt = this.edgeElts[e.id];
 	elt.classList.remove("highlight");	
@@ -454,7 +470,7 @@ function GraphVisualizer (graph, svg, text) {
 }
 
 //a function that runs the prims algorithm and returns the minimum spanning tree
-function prim() {
+async function prim() {
 	console.log("prim running");
 	//ask for start vertex, 
 	//if the graph has no vertex, then ask the user to add vertex first and return
@@ -483,6 +499,8 @@ function prim() {
 		  for (let neighbor of vtx.neighbors) {
 			if (!mst.vertices.includes(neighbor)) {
 			  set.add(graph.getEdge(vtx, neighbor));
+			  gv.highlightEdgePink(graph.getEdge(vtx, neighbor));
+			  await sleep(1000);
 			}
 		  }
 		}
@@ -492,6 +510,12 @@ function prim() {
 		  set.delete(cheapestEdge);
 		  cheapestEdge = getCheapestEdge(set);
 		}
+
+		// Highlight the cheapest edge
+		gv.highlightEdge(cheapestEdge);
+		gv.unhighlightAllPinkEdges();
+		await sleep(1000);
+
   
 		mst.edges.push(cheapestEdge);
 		set.delete(cheapestEdge);
@@ -512,6 +536,22 @@ function prim() {
 	  }
 
 	}
+  }
+
+  function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  function getCheapestEdge(set) {
+	let cheapestEdge = null;
+	let cheapestWeight = Infinity;
+	for (let edge of set) {
+	  if (edge.weight < cheapestWeight) {
+		cheapestEdge = edge;
+		cheapestWeight = edge.weight;
+	  }
+	}
+	return cheapestEdge;
   }
 
 
@@ -535,11 +575,11 @@ function buildSimpleExample () {
 	vertices.push(vtx2);
 	graph.addVertex(vtx2);
 
-	let vtx3 = graph.createVertex(350,150);
+	let vtx3 = graph.createVertex(300,150);
 	vertices.push(vtx3);
 	graph.addVertex(vtx3);
 
-	let vtx4 = graph.createVertex(350,250);
+	let vtx4 = graph.createVertex(550,250);
 	vertices.push(vtx4);
 	graph.addVertex(vtx4);
 
@@ -575,17 +615,6 @@ function buildSimpleExample () {
     graph.addEdge(vertices[6], vertices[7]);
 }
 
-function getCheapestEdge(set) {
-	let cheapestEdge = null;
-	let cheapestWeight = Infinity;
-	for (let edge of set) {
-	  if (edge.weight < cheapestWeight) {
-		cheapestEdge = edge;
-		cheapestWeight = edge.weight;
-	  }
-	}
-	return cheapestEdge;
-  }
 
 
 
