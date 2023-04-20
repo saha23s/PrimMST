@@ -1,3 +1,5 @@
+// UPDATE: Prim solid done 
+//TO_DO: kruskal 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 function Graph(id) {
@@ -31,7 +33,7 @@ function Graph(id) {
     this.addEdge = function(vtx1, vtx2) {
 	if (!this.isEdge(vtx1, vtx2)) {
 		const weight = prompt("Enter weightage for edge (" + vtx1.id + ", " + vtx2.id + "):");
-	    const edge = new Edge(vtx1, vtx2, this.nextEdgeID, weight);
+	    const edge = new Edge(vtx1, vtx2, this.nextEdgeID, parseInt(weight));
 	    this.nextEdgeID++;
 	    vtx1.addNeighbor(vtx2);
 	    vtx2.addNeighbor(vtx1);
@@ -453,6 +455,7 @@ function GraphVisualizer (graph, svg, text) {
         
 }
 
+
 //a function that runs the prims algorithm and returns the minimum spanning tree
 //input: graph
 //output: minimum spanning tree
@@ -477,6 +480,7 @@ function prim(){
 	//array to store visited vertices
 	let visited = [];
 	var cost = 0;
+	let costAdd = false;
 
 	//checking the valiidity of the start vertex and pushing it in the visited array	
 	if ( visited.length == 0 ){
@@ -497,6 +501,7 @@ function prim(){
 	let pq = new PriorityQueue();
 	let set = new Set();
 
+	//should not run: if the edge set is empty or if all the vertices have been visited
 	while ( graph.edges.length != 0 && visited.length != graph.vertices.length ){
 		console.log("enqueuing edges");
 		//enqueue all the edges that are connected to the start vertex 
@@ -509,6 +514,7 @@ function prim(){
 				pq.enqueue(graph.edges[i], graph.edges[i].weight);
 				set.add(graph.edges[i]);
 				console.log("enqueued edge: vtx1- vtx2 - weight  " + graph.edges[i].vtx1.id + " " + graph.edges[i].vtx2.id + " " + graph.edges[i].weight);
+				
 			}
 		}
 		
@@ -525,7 +531,11 @@ function prim(){
 			console.log("just pushed ids " +  minEdge.vtx1.id);
 			console.log("visited ids: " + visited);  
 			startVertex  = minEdge.vtx1; 
-			console.log( "startvertex: " + startVertex.id)
+			console.log( "startvertex: " + startVertex.id); 
+			if (costAdd == false){
+				cost += parseInt(minEdge.weight);
+				costAdd = true;
+			}
 			
 			}
 			if (!visited.includes(minEdge.vtx2.id)) {
@@ -533,15 +543,21 @@ function prim(){
 			startVertex  = minEdge.vtx2;
 			console.log("just pushed pt2 " +  minEdge.vtx1.id);
 			console.log("visited pt2 : " + visited);  
+			if (costAdd == false){
+				cost += parseInt(minEdge.weight);
+				costAdd = true;
+			}
 			}
 
 			// Add the weight of the dequeued edge to the cost
-			cost += parseInt(minEdge.weight);
+			costAdd = false;
 			console.log("cost: " + cost);
 			break ; 
 		}
 	}
 
+	console.log("final visited: " + visited);
+	costbox.innerHTML = "Minimum Cost: " + cost;
 	return visited; 
 
 
@@ -553,9 +569,11 @@ function prim(){
 
 
 // problem with the cost being calculated and need to implement the cycle check thingy 
+//use union find for the cycle check thingy
 function kruskal(){
 	let visited = [];
 	var cost = 0;
+	
 
 
 	// Create a new priority queue
@@ -569,7 +587,7 @@ function kruskal(){
 	console.log(pq.heap); 
 
 	//iterate till all vertices are visited or there are no more edges in the priority queue 
-	while ( !pq.isEmpty() ){
+	while (graph.edges.length != 0 && !pq.isEmpty() ){
 		// Dequeue the edge with the minimum weight from the priority queue
 		let minEdge = pq.dequeue();
 		console.log("min edge vtx1 - vtx2 - weight: " + minEdge.vtx1.id + " " + minEdge.vtx2.id + " " + minEdge.weight);
@@ -578,9 +596,9 @@ function kruskal(){
 		// Add the vertices of the dequeued edge to the set of visited vertices
 		if (!visited.includes(minEdge.vtx1.id)) {
 		visited.push(minEdge.vtx1.id);
-		
 		console.log("just pushed ids " +  minEdge.vtx1.id);
 		console.log("visited ids: " + visited);  
+
 		
 		}
 		if (!visited.includes(minEdge.vtx2.id)) {
@@ -675,5 +693,6 @@ const svg = document.querySelector("#graph-box");
 const text = document.querySelector("#graph-text-box");
 const graph = new Graph(0);
 const gv = new GraphVisualizer(graph, svg, text);
+const costbox = document.querySelector("#cost");
 
 
