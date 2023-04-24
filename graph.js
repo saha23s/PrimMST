@@ -1,3 +1,5 @@
+// UPDATE: Prim solid done 
+//TO_DO: kruskal 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 function Graph(id) {
@@ -31,10 +33,12 @@ function Graph(id) {
     this.addEdgeUser = function(vtx1, vtx2) {
 	if (!this.isEdge(vtx1, vtx2)) {
 		const weight = prompt("Enter weightage for edge (" + vtx1.id + ", " + vtx2.id + "):");
-	    const edge = new Edge(vtx1, vtx2, this.nextEdgeID, weight);
+	    const edge = new Edge(vtx1, vtx2, this.nextEdgeID, parseInt(weight));
 	    this.nextEdgeID++;
 	    vtx1.addNeighbor(vtx2);
 	    vtx2.addNeighbor(vtx1);
+	    //vtx1.addEdge(edge);  // adding edge to the set of edges incident to vtx1
+		//vtx2.addEdge(edge);  // adding edge to the set of edges incident to vtx2
 	    this.edges.push(edge);
 	    console.log("added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight);
 
@@ -112,6 +116,15 @@ function Vertex(id, graph, x, y) {
     this.y = y;          // y coordinate of location
     
     this.neighbors = []; // the adjacency list of this vertex
+	this.vertextEdges = [];    // the edges incident to this vertex
+
+	// add edge to the set of edges incident to this vertex, if the
+	// edge is not already stored as an edge incident to this vertex
+	this.addEdge = function (edge) {
+		if (!this.vertexEdges.includes(edge)) {
+			this.vertexEdges.push(edge);
+		}
+	}
 
     // add vtx as a neighbor of this vertex, if it is not already a
     // neighbor
@@ -150,6 +163,13 @@ function Edge (vtx1, vtx2, id, weight) {
     this.equals = function (vtx1, vtx2) {
 	return (this.vtx1 == vtx1 && this.vtx2 == vtx2) || (this.vtx1 == vtx2 && this.vtx2 == vtx1);
     }
+
+	// return weight of an edge given two vertices
+	this.getWeight = function (vtx1, vtx2) {
+		if (this.equals(vtx1, vtx2)) {
+			return this.weight;
+		}
+	}
 }
 
 // an object to visualize and interact with a graph
@@ -469,100 +489,11 @@ function GraphVisualizer (graph, svg, text) {
         
 }
 
-//a function that runs the prims algorithm and returns the minimum spanning tree
-async function prim() {
-	console.log("prim running");
-	//ask for start vertex, 
-	//if the graph has no vertex, then ask the user to add vertex first and return
-	if (graph.vertices.length == 0) {
-	  alert("Please add vertex first");
-	  return;
-	} else {
-	  let start = parseInt(prompt("Enter the start vertex"));
-	  let startNode;
-	  for (let vtx of graph.vertices) {
-		if (vtx.id == start) {
-		  console.log("start vertex is " + start);
-		  startNode = vtx;
-		}
-	  }
-  
-	  //access the vertices array in the graph
-	  let allVertices = graph.vertices;
-	  let mst = new Graph(0);
-	  mst.vertices.push(startNode);
-	  let set = new Set();
-  
-	  let cheapestEdge = new Edge(0, 0, 0, Infinity);
-	  while (mst.vertices.length != allVertices.length) {
-		for (let vtx of mst.vertices) {
-		  for (let neighbor of vtx.neighbors) {
-			if (!mst.vertices.includes(neighbor)) {
-			  set.add(graph.getEdge(vtx, neighbor));
-			  gv.highlightEdgePink(graph.getEdge(vtx, neighbor));
-			  await sleep(1000);
-			}
-		  }
-		}
-  
-		cheapestEdge = getCheapestEdge(set);
-		while (mst.edges.includes(cheapestEdge)) {
-		  set.delete(cheapestEdge);
-		  cheapestEdge = getCheapestEdge(set);
-		}
-
-		// Highlight the cheapest edge
-		gv.highlightEdge(cheapestEdge);
-		gv.unhighlightAllPinkEdges();
-		await sleep(1000);
-
-  
-		mst.edges.push(cheapestEdge);
-		set.delete(cheapestEdge);
-		if (!mst.vertices.includes(cheapestEdge.vtx1)) {
-		  mst.vertices.push(cheapestEdge.vtx1);
-		}
-		if (!mst.vertices.includes(cheapestEdge.vtx2)) {
-		  mst.vertices.push(cheapestEdge.vtx2);
-		}
-	  }
-	  console.log(mst.vertices);
-	  console.log(mst.edges);
-
-	  // highlight the edges in the mst
-	  for (let e of mst.edges) {
-		// what is graphView?
-		gv.highlightEdge(e);
-	  }
-
-	}
-  }
 
   function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  function getCheapestEdge(set) {
-	let cheapestEdge = null;
-	let cheapestWeight = Infinity;
-	for (let edge of set) {
-	  if (edge.weight < cheapestWeight) {
-		cheapestEdge = edge;
-		cheapestWeight = edge.weight;
-	  }
-	}
-	return cheapestEdge;
-  }
-
-
-	
-	//create a new graph
-	// let mst = new Graph(0);
-	// //create a new priority queue
-	// let pq = new PriorityQueue();
-	// //create a new set
-	// let set = new Set();
-	// //add the start vertex to the set
 
 function buildSimpleExample () {
     vertices = [];
@@ -613,7 +544,236 @@ function buildSimpleExample () {
     graph.addEdge(vertices[4], vertices[6]);
     graph.addEdge(vertices[5], vertices[7]);
     graph.addEdge(vertices[6], vertices[7]);
+    
 }
+//input: graph
+//output: minimum spanning tree
+function prim(){
+	console.log("prim running"); 
+	
+	//fetch user input from the html page
+	let startVertex = document.getElementById("input-box").value;
+	console.log(startVertex);
+	
+	if (graph.vertices.length == 0){
+		alert("Add vertices first");
+		return;
+	}
+	else if (startVertex == ""){
+		alert("Enter a start vertex");
+		return;
+
+	}
+
+
+	//array to store visited vertices
+	let visited = [];
+	var cost = 0;
+	let costAdd = false;
+
+	//checking the valiidity of the start vertex and pushing it in the visited array	
+	if ( visited.length == 0 ){
+		for ( let i = 0; i < graph.vertices.length; i++){
+			if ( graph.vertices[i].id == startVertex){
+				startVertex = graph.vertices[i];
+				visited.push(graph.vertices[i].id);
+				break; 
+			}
+			else if ( i == graph.vertices.length - 1){
+				alert("Invalid start vertex");
+				return;
+			}
+		}
+
+	} 
+
+	let pq = new PriorityQueue();
+	let set = new Set();
+
+	//should not run: if the edge set is empty or if all the vertices have been visited
+	while ( graph.edges.length != 0 && visited.length != graph.vertices.length ){
+		console.log("enqueuing edges");
+		//enqueue all the edges that are connected to the start vertex 
+		for ( let i = 0; i < graph.edges.length; i++){
+			if ( graph.edges[i].vtx1.id == startVertex.id || graph.edges[i].vtx2.id == startVertex.id){
+				// if that edge already exists in the priority queue, then don't enqueue it
+				if ( set.has(graph.edges[i]) ){
+					continue;
+				}
+				pq.enqueue(graph.edges[i], graph.edges[i].weight);
+				set.add(graph.edges[i]);
+				console.log("enqueued edge: vtx1- vtx2 - weight  " + graph.edges[i].vtx1.id + " " + graph.edges[i].vtx2.id + " " + graph.edges[i].weight);
+				
+			}
+		}
+		
+		//iterate till all vertices are visited or there are no more edges in the priority queue
+		while ( !pq.isEmpty() ){ //- this considition is never used since we always break out of the loop but anyways 
+			// Dequeue the edge with the minimum weight from the priority queue
+			let minEdge = pq.dequeue();
+			console.log("min edge vtx1 - vtx2 - weight: " + minEdge.vtx1.id + " " + minEdge.vtx2.id + " " + minEdge.weight);
+			
+			// Add the vertices of the dequeued edge to the set of visited vertices
+			if (!visited.includes(minEdge.vtx1.id)) {
+			visited.push(minEdge.vtx1.id);
+			
+			console.log("just pushed ids " +  minEdge.vtx1.id);
+			console.log("visited ids: " + visited);  
+			startVertex  = minEdge.vtx1; 
+			console.log( "startvertex: " + startVertex.id); 
+			if (costAdd == false){
+				cost += parseInt(minEdge.weight);
+				costAdd = true;
+			}
+			
+			}
+			if (!visited.includes(minEdge.vtx2.id)) {
+			visited.push(minEdge.vtx2.id);
+			startVertex  = minEdge.vtx2;
+			console.log("just pushed pt2 " +  minEdge.vtx1.id);
+			console.log("visited pt2 : " + visited);  
+			if (costAdd == false){
+				cost += parseInt(minEdge.weight);
+				costAdd = true;
+			}
+			}
+
+			// Add the weight of the dequeued edge to the cost
+			costAdd = false;
+			console.log("cost: " + cost);
+			break ; 
+		}
+	}
+
+	console.log("final visited: " + visited);
+	costbox.innerHTML = "Minimum Cost: " + cost;
+	return visited; 
+
+
+	 
+
+
+
+}
+
+
+// problem with the cost being calculated and need to implement the cycle check thingy 
+//use union find for the cycle check thingy
+function kruskal(){
+	let visited = [];
+	var cost = 0;
+	
+
+
+	// Create a new priority queue
+	let pq = new PriorityQueue();
+
+	// Enqueue all edges in the graph
+	for (let i = 0; i < graph.edges.length; i++) {
+		pq.enqueue(graph.edges[i], graph.edges[i].weight);
+	}
+
+	console.log(pq.heap); 
+
+	//iterate till all vertices are visited or there are no more edges in the priority queue 
+	while (graph.edges.length != 0 && !pq.isEmpty() ){
+		// Dequeue the edge with the minimum weight from the priority queue
+		let minEdge = pq.dequeue();
+		console.log("min edge vtx1 - vtx2 - weight: " + minEdge.vtx1.id + " " + minEdge.vtx2.id + " " + minEdge.weight);
+		
+
+		// Add the vertices of the dequeued edge to the set of visited vertices
+		if (!visited.includes(minEdge.vtx1.id)) {
+		visited.push(minEdge.vtx1.id);
+		console.log("just pushed ids " +  minEdge.vtx1.id);
+		console.log("visited ids: " + visited);  
+
+		
+		}
+		if (!visited.includes(minEdge.vtx2.id)) {
+		visited.push(minEdge.vtx2.id);
+		console.log("just pushed pt2 " +  minEdge.vtx1.id);
+		console.log("visited pt2 : " + visited);  
+		}
+		
+		//problme with the cost: dk where to add it so that it adds when it's supposed to
+		//add cycle check thingy ? 
+		console.log("cost: " + cost);
+
+	}	
+}
+
+class PriorityQueue {
+	constructor() {
+	  this.heap = [];
+	}
+	
+	enqueue(value, priority) {
+	  const node = { value, priority };
+	  this.heap.push(node);
+	  this.bubbleUp(this.heap.length - 1);
+	}
+	
+	dequeue() {
+	  const root = this.heap[0];
+	  const lastNode = this.heap.pop();
+	  if (this.heap.length > 0) {
+		this.heap[0] = lastNode;
+		this.bubbleDown(0);
+	  }
+	  return root.value;
+	}
+	
+	bubbleUp(index) {
+	  const node = this.heap[index];
+	  while (index > 0) {
+		const parentIndex = Math.floor((index - 1) / 2);
+		const parent = this.heap[parentIndex];
+		if (node.priority >= parent.priority) {
+		  break;
+		}
+		this.heap[index] = parent;
+		index = parentIndex;
+	  }
+	  this.heap[index] = node;
+	}
+	
+	bubbleDown(index) {
+	  const node = this.heap[index];
+	  const length = this.heap.length;
+	  while (true) {
+		const leftChildIndex = index * 2 + 1;
+		const rightChildIndex = index * 2 + 2;
+		let leftChild, rightChild;
+		let swapIndex = null;
+		if (leftChildIndex < length) {
+		  leftChild = this.heap[leftChildIndex];
+		  if (leftChild.priority < node.priority) {
+			swapIndex = leftChildIndex;
+		  }
+		}
+		if (rightChildIndex < length) {
+		  rightChild = this.heap[rightChildIndex];
+		  if ((swapIndex === null && rightChild.priority < node.priority) ||
+			  (swapIndex !== null && rightChild.priority < leftChild.priority)) {
+			swapIndex = rightChildIndex;
+		  }
+		}
+		if (swapIndex === null) {
+		  break;
+		}
+		this.heap[index] = this.heap[swapIndex];
+		index = swapIndex;
+	  }
+	  this.heap[index] = node;
+	}
+
+	isEmpty() {
+		return this.heap.length == 0;
+	}
+  }
+  
+
 
 
 
@@ -622,6 +782,8 @@ const svg = document.querySelector("#graph-box");
 const text = document.querySelector("#graph-text-box");
 const graph = new Graph(0);
 const gv = new GraphVisualizer(graph, svg, text);
+const costbox = document.querySelector("#cost");
+
 
 const btnSimpleGraph = document.querySelector("#btn-simple-graph");
 btnSimpleGraph.addEventListener("click", function () {

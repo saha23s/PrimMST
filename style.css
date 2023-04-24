@@ -4,9 +4,12 @@ body{
 
 svg {
     position: relative;
-    left: 30%;
+    margin: 0 auto;
+
     display: block;
 }
+
+
 
 .vertex {
     
@@ -60,6 +63,14 @@ svg {
     /* some options: ease (default), ease-in, ease-out, ease-in-out, linear*/
     transition-timing-function: linear;
     /* transition-delay: 500ms; */
+}
+
+#input-box{
+    
+    margin: 0 auto;
+    margin-top: 20px;
+
+
 }
 
 
