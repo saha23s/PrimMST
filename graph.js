@@ -30,7 +30,7 @@ function Graph(id) {
     // create and return an edge between vertices vtx1 and vtx2;
     // returns existing edge if there is already an edge between the
     // two vertices
-    this.addEdge = function(vtx1, vtx2) {
+    this.addEdgeUser = function(vtx1, vtx2) {
 	if (!this.isEdge(vtx1, vtx2)) {
 		const weight = prompt("Enter weightage for edge (" + vtx1.id + ", " + vtx2.id + "):");
 	    const edge = new Edge(vtx1, vtx2, this.nextEdgeID, parseInt(weight));
@@ -54,6 +54,24 @@ function Graph(id) {
 	    return null;
 	}
     }
+
+	this.addEdge = function(vtx1, vtx2) {
+		if (!this.isEdge(vtx1, vtx2)) {
+			// randomly generate weight within 1 to 10
+			const weight = Math.floor(Math.random() * 10) + 1;
+			const edge = new Edge(vtx1, vtx2, this.nextEdgeID, weight);
+			this.nextEdgeID++;
+			vtx1.addNeighbor(vtx2);
+			vtx2.addNeighbor(vtx1);
+			this.edges.push(edge);
+			console.log("added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight);
+			
+			return edge;
+		} else {
+			console.log("edge (" + vtx1.id + ", " + vtx2.id + ") not added because it is already in the graph");
+			return null;
+		}
+		}
 
     // determine if vtx1 and vtx2 are already an edge in this graph
     this.isEdge = function (vtx1, vtx2) {
@@ -292,7 +310,7 @@ function GraphVisualizer (graph, svg, text) {
 	for (let edge of this.graph.edges) {
 	    let edgeElt = this.edgeElts[edge.id];
 	    if (edgeElt === undefined) {
-		this.addEdge(edge);
+		this.addEdgeUser(edge);
 	    } else {
 		let vtx1 = edge.vtx1;
 		let vtx2 = edge.vtx2;
@@ -319,9 +337,9 @@ function GraphVisualizer (graph, svg, text) {
 	    this.removeOverlayVertex(vtx);
 	} else {
 	    const other = this.highVertices.pop();
-	    let e = this.graph.addEdge(other, vtx);
+	    let e = this.graph.addEdgeUser(other, vtx);
 	    if (e != null) {
-		this.addEdge(e);
+		this.addEdgeUser(e);
 	    }
 	    this.unhighlightVertex(other);
 	    this.removeOverlayVertex(other);
@@ -329,7 +347,7 @@ function GraphVisualizer (graph, svg, text) {
     }
 
     // add an edge to the visualization
-    this.addEdge = function (edge) {
+    this.addEdgeUser = function (edge) {
 	const vtx1 = edge.vtx1;
 	const vtx2 = edge.vtx2;
 	const edgeElt = document.createElementNS(SVG_NS, "line");
@@ -385,6 +403,22 @@ function GraphVisualizer (graph, svg, text) {
 	const elt = this.edgeElts[e.id];
 	elt.classList.add("highlight");	
     }
+
+	this.highlightEdgePink = function (e) {
+		const elt = this.edgeElts[e.id];
+		elt.classList.add("highlight-pink");	
+	}
+
+	this.unhighlightEdgePink = function (e) {
+		const elt = this.edgeElts[e.id];
+		elt.classList.remove("highlight-pink");	
+	}
+
+	this.unhighlightAllPinkEdges = function () {
+		for (e of this.graph.edges) {
+			this.unhighlightEdgePink(e);
+		}
+	}
 
     this.unhighlightEdge = function (e) {
 	const elt = this.edgeElts[e.id];
@@ -456,7 +490,62 @@ function GraphVisualizer (graph, svg, text) {
 }
 
 
-//a function that runs the prims algorithm and returns the minimum spanning tree
+  function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+
+function buildSimpleExample () {
+    vertices = [];
+	
+    let vtx = graph.createVertex(150,50);
+	vertices.push(vtx);
+	graph.addVertex(vtx);
+
+	let vtx2 = graph.createVertex(250,50);
+	vertices.push(vtx2);
+	graph.addVertex(vtx2);
+
+	let vtx3 = graph.createVertex(300,150);
+	vertices.push(vtx3);
+	graph.addVertex(vtx3);
+
+	let vtx4 = graph.createVertex(550,250);
+	vertices.push(vtx4);
+	graph.addVertex(vtx4);
+
+	let vtx5 = graph.createVertex(250,350);
+	vertices.push(vtx5);
+	graph.addVertex(vtx5);
+
+	let vtx6 = graph.createVertex(450,350);
+	vertices.push(vtx6);
+	graph.addVertex(vtx6);
+
+	let vtx7 = graph.createVertex(150,350);
+	vertices.push(vtx7);
+	graph.addVertex(vtx7);
+
+	let vtx8 = graph.createVertex(50,150);
+	vertices.push(vtx8);
+	graph.addVertex(vtx8);
+
+
+
+    graph.addEdge(vertices[0], vertices[3]);
+    graph.addEdge(vertices[0], vertices[5]);
+    graph.addEdge(vertices[0], vertices[6]);
+    graph.addEdge(vertices[1], vertices[2]);
+    graph.addEdge(vertices[1], vertices[4]);
+    graph.addEdge(vertices[1], vertices[7]);
+    graph.addEdge(vertices[2], vertices[3]);
+    graph.addEdge(vertices[2], vertices[5]);
+    graph.addEdge(vertices[3], vertices[4]);
+    graph.addEdge(vertices[4], vertices[6]);
+    graph.addEdge(vertices[5], vertices[7]);
+    graph.addEdge(vertices[6], vertices[7]);
+    
+}
 //input: graph
 //output: minimum spanning tree
 function prim(){
@@ -612,7 +701,6 @@ function kruskal(){
 		console.log("cost: " + cost);
 
 	}	
-
 }
 
 class PriorityQueue {
@@ -689,6 +777,7 @@ class PriorityQueue {
 
 
 
+
 const svg = document.querySelector("#graph-box");
 const text = document.querySelector("#graph-text-box");
 const graph = new Graph(0);
@@ -696,3 +785,8 @@ const gv = new GraphVisualizer(graph, svg, text);
 const costbox = document.querySelector("#cost");
 
 
+const btnSimpleGraph = document.querySelector("#btn-simple-graph");
+btnSimpleGraph.addEventListener("click", function () {
+    buildSimpleExample(graph);
+    gv.draw();
+});
