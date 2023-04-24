@@ -548,7 +548,7 @@ function buildSimpleExample () {
 }
 //input: graph
 //output: minimum spanning tree
-function prim(){
+async function prim(){
 	console.log("prim running"); 
 	
 	//fetch user input from the html page
@@ -603,7 +603,8 @@ function prim(){
 				pq.enqueue(graph.edges[i], graph.edges[i].weight);
 				set.add(graph.edges[i]);
 				console.log("enqueued edge: vtx1- vtx2 - weight  " + graph.edges[i].vtx1.id + " " + graph.edges[i].vtx2.id + " " + graph.edges[i].weight);
-				
+				gv.highlightEdgePink(graph.edges[i]);
+			  	await sleep(1000);
 			}
 		}
 		
@@ -613,9 +614,13 @@ function prim(){
 			let minEdge = pq.dequeue();
 			console.log("min edge vtx1 - vtx2 - weight: " + minEdge.vtx1.id + " " + minEdge.vtx2.id + " " + minEdge.weight);
 			
+			gv.highlightEdge(minEdge);
+			gv.unhighlightAllPinkEdges();
+			await sleep(1000);
 			// Add the vertices of the dequeued edge to the set of visited vertices
 			if (!visited.includes(minEdge.vtx1.id)) {
 			visited.push(minEdge.vtx1.id);
+
 			
 			console.log("just pushed ids " +  minEdge.vtx1.id);
 			console.log("visited ids: " + visited);  
