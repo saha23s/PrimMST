@@ -1,5 +1,6 @@
 // UPDATE: Prim solid done 
 //TO_DO: kruskal 
+// TO_DO: more in whassap 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 function Graph(id) {
@@ -103,6 +104,15 @@ function Graph(id) {
 		}
 		return str;
     }
+
+	// clear the graph 
+	this.clear = function () {
+		this.vertices = [];
+		this.edges = [];
+		this.nextVertexID = 0;
+		this.nextEdgeID = 0;
+	}
+
 }
 
 // an object representing a vertex in a graph
@@ -375,6 +385,18 @@ function GraphVisualizer (graph, svg, text) {
 	this.text.innerHTML = str;
     }
 
+	//clear the text box and anything drawn on the svg 
+	this.clear = function () {
+		this.text.innerHTML = "";
+		this.vertexGroup.innerHTML = "";
+		this.edgeGroup.innerHTML = "";
+		this.vertexElts = {};
+		this.edgeElts = {};
+		this.highVertices = [];
+		this.highEdges = [];
+	}
+
+
     /*********************************************************
      * Methods to (un)highlight and (un) mute vertices/edges *
      *********************************************************/
@@ -487,6 +509,8 @@ function GraphVisualizer (graph, svg, text) {
 	this.unmuteAllEdges();
     }
         
+
+
 }
 
 
@@ -607,6 +631,12 @@ async function prim(){
 			  	await sleep(1000);
 			}
 		}
+//dk if working ot not 
+		// for (let i = 0 ; i< set.size; i++){
+		// 	gv.highlightEdgePink(graph.edges[i]);
+		// 	await sleep(1000);
+		// }
+
 		
 		//iterate till all vertices are visited or there are no more edges in the priority queue
 		while ( !pq.isEmpty() ){ //- this considition is never used since we always break out of the loop but anyways 
@@ -620,8 +650,6 @@ async function prim(){
 			// Add the vertices of the dequeued edge to the set of visited vertices
 			if (!visited.includes(minEdge.vtx1.id)) {
 			visited.push(minEdge.vtx1.id);
-
-			
 			console.log("just pushed ids " +  minEdge.vtx1.id);
 			console.log("visited ids: " + visited);  
 			startVertex  = minEdge.vtx1; 
@@ -651,7 +679,7 @@ async function prim(){
 	}
 
 	console.log("final visited: " + visited);
-	costbox.innerHTML = "Minimum Cost: " + cost;
+	costbox.innerHTML = "Minimum Cost using Prim: " + cost;
 	return visited; 
 
 
@@ -665,11 +693,11 @@ async function prim(){
 // problem with the cost being calculated and need to implement the cycle check thingy 
 //use union find for the cycle check thingy
 function kruskal(){
+	console.log("kruskal running");
 	let visited = [];
 	var cost = 0;
+	let costAdd = false;
 	
-
-
 	// Create a new priority queue
 	let pq = new PriorityQueue();
 
@@ -692,20 +720,35 @@ function kruskal(){
 		visited.push(minEdge.vtx1.id);
 		console.log("just pushed ids " +  minEdge.vtx1.id);
 		console.log("visited ids: " + visited);  
+		if (costAdd == false){
+			cost += parseInt(minEdge.weight);
+			costAdd = true;
+		}
 
-		
 		}
 		if (!visited.includes(minEdge.vtx2.id)) {
 		visited.push(minEdge.vtx2.id);
 		console.log("just pushed pt2 " +  minEdge.vtx1.id);
 		console.log("visited pt2 : " + visited);  
+		if (costAdd == false){
+			cost += parseInt(minEdge.weight);
+			costAdd = true;
 		}
+		}
+
+		costAdd = false;
+		console.log("cost: " + cost);
+		// break ; 
 		
 		//problme with the cost: dk where to add it so that it adds when it's supposed to
 		//add cycle check thingy ? 
-		console.log("cost: " + cost);
+		
 
-	}	
+	}
+	
+	console.log("final visited: " + visited);
+	costbox.innerHTML = "Minimum Cost using Kruskal: " + cost;
+	return visited; 
 }
 
 class PriorityQueue {
@@ -780,9 +823,6 @@ class PriorityQueue {
   
 
 
-
-
-
 const svg = document.querySelector("#graph-box");
 const text = document.querySelector("#graph-text-box");
 const graph = new Graph(0);
@@ -792,6 +832,9 @@ const costbox = document.querySelector("#cost");
 
 const btnSimpleGraph = document.querySelector("#btn-simple-graph");
 btnSimpleGraph.addEventListener("click", function () {
-    buildSimpleExample(graph);
-    gv.draw();
+	//if smth in the svg, then clear svg and graph
+	gv.clear();
+	graph.clear(); //-> works 
+    buildSimpleExample(graph); // create a new example 
+    gv.draw(); 
 });
