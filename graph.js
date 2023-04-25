@@ -111,6 +111,10 @@ function Graph(id) {
 		this.edges = [];
 		this.nextVertexID = 0;
 		this.nextEdgeID = 0;
+		//remove the text in the weightage paragraph too 
+		const weightageParagraph = document.getElementById("weightage-paragraph");
+		weightageParagraph.innerHTML = "";
+
 	}
 
 }
@@ -749,6 +753,16 @@ function kruskal(){
 	console.log("final visited: " + visited);
 	costbox.innerHTML = "Minimum Cost using Kruskal: " + cost;
 	return visited; 
+}
+
+// clears whatever the user drew on the svg so far 
+function reset(){
+
+	console.log("resetting");
+	gv.clear();
+	graph.clear(); 
+
+
 }
 
 class PriorityQueue {
