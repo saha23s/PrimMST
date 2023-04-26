@@ -773,7 +773,7 @@ function kruskal(){
 		console.log("min edge vtx1 - vtx2 - weight: " + minEdge.vtx1.id + " " + minEdge.vtx2.id + " " + minEdge.weight);
 		//check if the edge creates a cycle or not 
 		//if it does, then don't add it to the visited array and don't add the weight to the cost
-		if (cycleCheck(minEdge, mst) == true){
+		if (hasCycle(minEdge, mst) == true){
 			console.log("cycle detected");
 			continue;
 		}
