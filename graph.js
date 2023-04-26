@@ -1,6 +1,5 @@
-// UPDATE: Prim solid done 
 //TO_DO: kruskal 
-// TO_DO: more in whassap 
+
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 function Graph(id) {
@@ -560,6 +559,8 @@ function GraphVisualizer (graph, svg, text) {
 
 //build a simple example of a graph
 function buildSimpleExample () { 
+
+
     vertices = [];
 
 	// randomly generate the vertices while keeping the x and y coordinates within the svg 
@@ -587,87 +588,7 @@ function buildSimpleExample () {
     
 }
 
-async function primTest () {
 
-	console.log("prim running"); 
-	
-	//fetch user input from the html page
-	let startVertex = document.getElementById("input-box").value;
-	console.log(startVertex);
-	
-	if (graph.vertices.length == 0){
-		alert("Add vertices first");
-		return;
-	}
-	else if (startVertex == ""){
-		alert("Enter a start vertex");
-		return;
-
-	}
-
-
-	//array to store visited vertices
-	let visited = [];
-	var cost = 0;
-	let costAdd = false;
-
-	//checking the valiidity of the start vertex and pushing it in the visited array	
-	if ( visited.length == 0 ){
-
-		for ( let i = 0; i < graph.vertices.length; i++){
-			if ( graph.vertices[i].id == startVertex){
-				startVertex = graph.vertices[i];
-				visited.push(graph.vertices[i].id);
-				break; 
-			}
-			else if ( i == graph.vertices.length - 1){
-				alert("Invalid start vertex");
-				return;
-			}
-		}
-
-	} 
-
-	let pq = new PriorityQueue();
-	let set = new Set();
-
-	while (visited.length < graph.vertices.length) {
-
-		// Enqueue all edges that are connected to visited vertices and not already visited
-		for (const edge of graph.edges) {
-		  if (
-			(visited.includes(edge.vtx1.id) || visited.includes(edge.vtx2.id)) &&
-			!set.has(edge)
-		  ) {
-			pq.enqueue(edge, edge.weight);
-			set.add(edge);
-			gv.highlightEdgePink(edge);
-			await sleep(1000);
-		  }
-		}
-	
-		if (pq.isEmpty()) {
-		  throw new Error("Graph is not connected");
-		}
-		  // Dequeue the edge with the minimum weight from the priority queue
-		  const minEdge = pq.dequeue();
-		  console.log("minEdge: " + minEdge);
-		  const unvisitedVertex =
-			visited.includes(minEdge.vtx1.id) ? minEdge.vtx2 : minEdge.vtx1;
-		  visited.push(unvisitedVertex.id);
-		  startVertex = unvisitedVertex;
-		  cost += minEdge.weight;
-		  gv.highlightEdge(minEdge);
-		  await sleep(1000);
-		  gv.unhighlightAllPinkEdges();
-		}
-	  
-		console.log("final visited: " + visited);
-		costbox.innerHTML = "Minimum Cost using Prim: " + cost;
-		return visited;
-	  
-
-}
 //input: graph
 //output: minimum spanning tree
 async function prim(){
@@ -717,6 +638,11 @@ async function prim(){
 	while ( graph.edges.length != 0 && visited.length < graph.vertices.length ){
 		console.log("enqueuing edges");
 		for (let i = 0 ; i< set.size; i++){
+			//to-do: if it is highlighted, dont highlightPink it: add any highlighted one in the array and then cross - check
+			if ( graph.edges[i].highlighted == true){
+				continue;
+			}
+
 			gv.highlightEdgePink(graph.edges[i]);
 			await sleep(1000);
 		}
@@ -737,12 +663,12 @@ async function prim(){
 
 		
 		//iterate till all vertices are visited or there are no more edges in the priority queue
-		while ( !pq.isEmpty() ){ //- this considition is never used since we always break out of the loop but anyways 
+		if ( !pq.isEmpty() ){ //- this considition is never used since we always break out of the loop but anyways 
 			// Dequeue the edge with the minimum weight from the priority queue
 			let minEdge = pq.dequeue();
 			console.log("min edge vtx1 - vtx2 - weight: " + minEdge.vtx1.id + " " + minEdge.vtx2.id + " " + minEdge.weight);
-			
-			gv.highlightEdge(minEdge);
+			//only highlight the min if we are adding it to the cost  --> little off putting and confusing in terms of visualization: 
+	
 			gv.unhighlightAllPinkEdges();
 			await sleep(1000);
 			// Add the vertices of the dequeued edge to the set of visited vertices
@@ -755,6 +681,8 @@ async function prim(){
 			if (costAdd == false){
 				cost += parseInt(minEdge.weight);
 				costAdd = true;
+				gv.highlightEdge(minEdge);
+				await sleep(1000);
 			}
 			
 			}
@@ -766,13 +694,15 @@ async function prim(){
 			if (costAdd == false){
 				cost += parseInt(minEdge.weight);
 				costAdd = true;
+				gv.highlightEdge(minEdge);
+				await sleep(1000);
 			}
 			}
 
 			// Add the weight of the dequeued edge to the cost
 			costAdd = false;
 			console.log("cost: " + cost);
-			break ; 
+			// break ; 
 		}
 	}
 
