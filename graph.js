@@ -1,9 +1,6 @@
-// UPDATE: Prim solid done
-//UPDATE: if you press add simple graph, new graph will be created using the circular layout (vertices are created randomly)
-
-//TO_DO: kruskal: cycle check and visualization 
-
-
+// UPDATE: Prim solid done 
+//TO_DO: kruskal 
+// TO_DO: more in whassap 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 function Graph(id) {
@@ -76,6 +73,14 @@ function Graph(id) {
 			return null;
 		}
 		}
+
+	this.addEdgeIndividual = function(edge) {
+		this.edges.push(edge);
+		this.nextEdgeID++;
+		console.log("added edge (" + edge.vtx1.id + ", " + edge.vtx2.id + ") with weightage " + edge.weight);
+	}
+
+	
 
     // determine if vtx1 and vtx2 are already an edge in this graph
     this.isEdge = function (vtx1, vtx2) {
@@ -170,8 +175,6 @@ function Vertex(id, graph, x, y) {
 }
 
 // an object representing an edge in a graph
-// each edge has an associated unique identifier (id), the graph
-// containing the edge, as well as the two endpoints of the edge
 function Edge (vtx1, vtx2, id, weight) {
     this.vtx1 = vtx1;   // first endpoint of the edge
     this.vtx2 = vtx2;   // second endpoint of the edge
@@ -396,7 +399,6 @@ function GraphVisualizer (graph, svg, text) {
 
 	//clear the text box and anything drawn on the svg 
 	this.clear = function () {
-		this.unhighlightAll(); 
 		this.text.innerHTML = "";
 		this.vertexGroup.innerHTML = "";
 		this.edgeGroup.innerHTML = "";
@@ -404,7 +406,6 @@ function GraphVisualizer (graph, svg, text) {
 		this.edgeElts = {};
 		this.highVertices = [];
 		this.highEdges = [];
-
 	}
 
 
@@ -521,7 +522,7 @@ function GraphVisualizer (graph, svg, text) {
     }
         
 
-	/******************************************************
+/******************************************************
 	 * Methods to change layout 
 	 ***  ************************************************/
 
@@ -549,11 +550,10 @@ function GraphVisualizer (graph, svg, text) {
 		this.setLayoutCircle(300, 200, 180);
 		this.draw();
 	}
-
 }
 
 
-function sleep(ms) {
+  function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
   }
 
@@ -787,53 +787,70 @@ async function prim(){
 //check if the graph has a cycle 
 //input: graph
 //output : boolean
-function hasCycle(){
-	let visited = [];
+function hasCycle(edge, graph){
+	graph.addEdgeIndividual(edge);
+	graph.addVertex(edge.vtx1);
+	graph.addVertex(edge.vtx2);
+	let visited = {};
+	// set every vertex to false
+	for (let i = 0; i < graph.vertices.length; i++){
+		visited[graph.vertices[i].id] = false;
+	}
+	// the set stores the edges that have been visited
 	let set = new Set();
 	let cycle = false; 
 	let startVertex = graph.vertices[0]; 
 	// creating a queue
 	let q = [];
 	q.push(startVertex);
-
+	visited[startVertex.id] = true;
 	//enqueue all the edges that are connected to the start vertex
-	while(!q.length == 0){
-		console.log(q);
+	while(q.length != 0){
+		// prints every vertex in the queue in a readabe format
+		console.log("queue: ");
+		for (let i = 0; i < q.length; i++){
+			console.log(q[i].id);
+		}
 		let vtx = q.shift();
-		visited.push(vtx);
-		console.log(visited);
 		for (let i = 0; i < graph.edges.length; i++){
 			if (graph.edges[i].vtx1.id == vtx.id || graph.edges[i].vtx2.id == vtx.id){
+				console.log(graph.edges[i]);
 				if (set.has(graph.edges[i]) ){
+					console.log("edge already in set");
 					continue;
 				}
-				if (visited.includes(graph.edges[i].vtx1) && visited.includes(graph.edges[i].vtx2) ){
-					return true; 
+				if (visited[graph.edges[i].vtx1.id] && visited[graph.edges[i].vtx2.id] ){
+					cycle = true;
+					console.log("cycle found");
+					return true;
 				}
-				else if ( !visited.includes(graph.edges[i].vtx1) ){
+				else if ( !visited[graph.edges[i].vtx1.id] ){
 					q.push(graph.edges[i].vtx1);
+					visited[graph.edges[i].vtx1.id] = true;
 				}
-				else if ( !visited.includes(graph.edges[i].vtx2) ){
+				else if ( !visited[graph.edges[i].vtx2.id] ){
 					q.push(graph.edges[i].vtx2);
+					visited[graph.edges[i].vtx2.id] = true;
 				}
 				set.add(graph.edges[i]);
+				console.log("adding the edge to the set");
 			}
 		}
 	}
 	console.log("cycle: " + cycle);
 	return false;
-	
 	}
 
 
 
-const mst = new Graph(0);
 // problem with the cost being calculated and need to implement the cycle check thingy 
 //use union find for the cycle check thingy
 function kruskal(){
 	console.log("kruskal running");
 	let visited = [];
 	var cost = 0;
+	// define a new graph
+	let mst = new Graph(1);
 	
 	//sort the edges in ascending order of their weights
 	// graph.edges.sort(function(a, b){return a.weight - b.weight});
@@ -900,14 +917,10 @@ function kruskal(){
 	return visited; 
 }
 
-
-
-
 // clears whatever the user drew on the svg so far 
 function reset(){
 
 	console.log("resetting");
-	
 	gv.clear();
 	graph.clear(); 
 
@@ -993,12 +1006,12 @@ const graph = new Graph(0);
 const gv = new GraphVisualizer(graph, svg, text);
 const costbox = document.querySelector("#cost");
 
+
 const btnSimpleGraph = document.querySelector("#btn-simple-graph");
 btnSimpleGraph.addEventListener("click", function () {
 	//if smth in the svg, then clear svg and graph
 	gv.clear();
 	graph.clear(); //-> works 
     buildSimpleExample(graph); // create a new example 
-	gv.drawCircle(); 
-	
+    gv.drawCircle(); 
 });
