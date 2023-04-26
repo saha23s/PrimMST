@@ -559,13 +559,49 @@ function prim(){
 	console.log("final visited: " + visited);
 	costbox.innerHTML = "Minimum Cost: " + cost;
 	return visited; 
-
-
-	 
-
-
-
 }
+
+//check if the graph has a cycle 
+//input: graph
+//output : boolean
+function hasCycle(){
+	let visited = [];
+	let set = new Set();
+	let cycle = false; 
+	let startVertex = graph.vertices[0]; 
+	// creating a queue
+	let q = [];
+	q.push(startVertex);
+
+	//enqueue all the edges that are connected to the start vertex
+	while(!q.length == 0){
+		console.log(q);
+		let vtx = q.shift();
+		visited.push(vtx);
+		console.log(visited);
+		for (let i = 0; i < graph.edges.length; i++){
+			if (graph.edges[i].vtx1.id == vtx.id || graph.edges[i].vtx2.id == vtx.id){
+				if (set.has(graph.edges[i]) ){
+					continue;
+				}
+				if (visited.includes(graph.edges[i].vtx1) && visited.includes(graph.edges[i].vtx2) ){
+					return true; 
+				}
+				else if ( !visited.includes(graph.edges[i].vtx1) ){
+					q.push(graph.edges[i].vtx1);
+				}
+				else if ( !visited.includes(graph.edges[i].vtx2) ){
+					q.push(graph.edges[i].vtx2);
+				}
+				set.add(graph.edges[i]);
+			}
+		}
+	}
+	console.log("cycle: " + cycle);
+	return false;
+	
+	}
+
 
 
 // problem with the cost being calculated and need to implement the cycle check thingy 
