@@ -198,6 +198,7 @@ function GraphVisualizer (graph, svg, text) {
     this.graph = graph;      // the graph we are visualizing
     this.svg = svg;          // the svg element we are drawing on
     this.text = text;        // a text box
+	let highlightedEdge = {};
     
     this.currentLayout = "random"; // the current layout engine
 
@@ -434,12 +435,16 @@ function GraphVisualizer (graph, svg, text) {
 
     this.highlightEdge = function (e) {
 	const elt = this.edgeElts[e.id];
+	// make this edge in the highlightedEdge true
+	highlightedEdge[e.id] = true;
 	elt.classList.add("highlight");	
     }
 
 	this.highlightEdgePink = function (e) {
-		const elt = this.edgeElts[e.id];
-		elt.classList.add("highlight-pink");	
+		if(!highlightedEdge[e.id] == true){
+			const elt = this.edgeElts[e.id];
+			elt.classList.add("highlight-pink");	
+		}
 	}
 
 	this.unhighlightEdgePink = function (e) {
