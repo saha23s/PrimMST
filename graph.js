@@ -1,5 +1,6 @@
 // UPDATE: Prim solid done 
 //TO_DO: kruskal 
+// TO_DO: more in whassap 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 function Graph(id) {
@@ -30,7 +31,7 @@ function Graph(id) {
     // create and return an edge between vertices vtx1 and vtx2;
     // returns existing edge if there is already an edge between the
     // two vertices
-    this.addEdge = function(vtx1, vtx2) {
+    this.addEdgeUser = function(vtx1, vtx2) {
 	if (!this.isEdge(vtx1, vtx2)) {
 		const weight = prompt("Enter weightage for edge (" + vtx1.id + ", " + vtx2.id + "):");
 	    const edge = new Edge(vtx1, vtx2, this.nextEdgeID, parseInt(weight));
@@ -54,6 +55,24 @@ function Graph(id) {
 	    return null;
 	}
     }
+
+	this.addEdge = function(vtx1, vtx2) {
+		if (!this.isEdge(vtx1, vtx2)) {
+			// randomly generate weight within 1 to 10
+			const weight = Math.floor(Math.random() * 10) + 1;
+			const edge = new Edge(vtx1, vtx2, this.nextEdgeID, weight);
+			this.nextEdgeID++;
+			vtx1.addNeighbor(vtx2);
+			vtx2.addNeighbor(vtx1);
+			this.edges.push(edge);
+			console.log("added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight);
+			
+			return edge;
+		} else {
+			console.log("edge (" + vtx1.id + ", " + vtx2.id + ") not added because it is already in the graph");
+			return null;
+		}
+		}
 
     // determine if vtx1 and vtx2 are already an edge in this graph
     this.isEdge = function (vtx1, vtx2) {
@@ -85,6 +104,19 @@ function Graph(id) {
 		}
 		return str;
     }
+
+	// clear the graph 
+	this.clear = function () {
+		this.vertices = [];
+		this.edges = [];
+		this.nextVertexID = 0;
+		this.nextEdgeID = 0;
+		//remove the text in the weightage paragraph too 
+		const weightageParagraph = document.getElementById("weightage-paragraph");
+		weightageParagraph.innerHTML = "";
+
+	}
+
 }
 
 // an object representing a vertex in a graph
@@ -292,7 +324,7 @@ function GraphVisualizer (graph, svg, text) {
 	for (let edge of this.graph.edges) {
 	    let edgeElt = this.edgeElts[edge.id];
 	    if (edgeElt === undefined) {
-		this.addEdge(edge);
+		this.addEdgeUser(edge);
 	    } else {
 		let vtx1 = edge.vtx1;
 		let vtx2 = edge.vtx2;
@@ -319,9 +351,9 @@ function GraphVisualizer (graph, svg, text) {
 	    this.removeOverlayVertex(vtx);
 	} else {
 	    const other = this.highVertices.pop();
-	    let e = this.graph.addEdge(other, vtx);
+	    let e = this.graph.addEdgeUser(other, vtx);
 	    if (e != null) {
-		this.addEdge(e);
+		this.addEdgeUser(e);
 	    }
 	    this.unhighlightVertex(other);
 	    this.removeOverlayVertex(other);
@@ -329,7 +361,7 @@ function GraphVisualizer (graph, svg, text) {
     }
 
     // add an edge to the visualization
-    this.addEdge = function (edge) {
+    this.addEdgeUser = function (edge) {
 	const vtx1 = edge.vtx1;
 	const vtx2 = edge.vtx2;
 	const edgeElt = document.createElementNS(SVG_NS, "line");
@@ -356,6 +388,18 @@ function GraphVisualizer (graph, svg, text) {
     this.updateTextBox = function (str) {
 	this.text.innerHTML = str;
     }
+
+	//clear the text box and anything drawn on the svg 
+	this.clear = function () {
+		this.text.innerHTML = "";
+		this.vertexGroup.innerHTML = "";
+		this.edgeGroup.innerHTML = "";
+		this.vertexElts = {};
+		this.edgeElts = {};
+		this.highVertices = [];
+		this.highEdges = [];
+	}
+
 
     /*********************************************************
      * Methods to (un)highlight and (un) mute vertices/edges *
@@ -385,6 +429,22 @@ function GraphVisualizer (graph, svg, text) {
 	const elt = this.edgeElts[e.id];
 	elt.classList.add("highlight");	
     }
+
+	this.highlightEdgePink = function (e) {
+		const elt = this.edgeElts[e.id];
+		elt.classList.add("highlight-pink");	
+	}
+
+	this.unhighlightEdgePink = function (e) {
+		const elt = this.edgeElts[e.id];
+		elt.classList.remove("highlight-pink");	
+	}
+
+	this.unhighlightAllPinkEdges = function () {
+		for (e of this.graph.edges) {
+			this.unhighlightEdgePink(e);
+		}
+	}
 
     this.unhighlightEdge = function (e) {
 	const elt = this.edgeElts[e.id];
@@ -453,13 +513,70 @@ function GraphVisualizer (graph, svg, text) {
 	this.unmuteAllEdges();
     }
         
+
+
 }
 
 
-//a function that runs the prims algorithm and returns the minimum spanning tree
+  function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+
+function buildSimpleExample () {
+    vertices = [];
+	
+    let vtx = graph.createVertex(150,50);
+	vertices.push(vtx);
+	graph.addVertex(vtx);
+
+	let vtx2 = graph.createVertex(250,50);
+	vertices.push(vtx2);
+	graph.addVertex(vtx2);
+
+	let vtx3 = graph.createVertex(300,150);
+	vertices.push(vtx3);
+	graph.addVertex(vtx3);
+
+	let vtx4 = graph.createVertex(550,250);
+	vertices.push(vtx4);
+	graph.addVertex(vtx4);
+
+	let vtx5 = graph.createVertex(250,350);
+	vertices.push(vtx5);
+	graph.addVertex(vtx5);
+
+	let vtx6 = graph.createVertex(450,350);
+	vertices.push(vtx6);
+	graph.addVertex(vtx6);
+
+	let vtx7 = graph.createVertex(150,350);
+	vertices.push(vtx7);
+	graph.addVertex(vtx7);
+
+	let vtx8 = graph.createVertex(50,150);
+	vertices.push(vtx8);
+	graph.addVertex(vtx8);
+
+
+
+    graph.addEdge(vertices[0], vertices[3]);
+    graph.addEdge(vertices[0], vertices[5]);
+    graph.addEdge(vertices[0], vertices[6]);
+    graph.addEdge(vertices[1], vertices[2]);
+    graph.addEdge(vertices[1], vertices[4]);
+    graph.addEdge(vertices[1], vertices[7]);
+    graph.addEdge(vertices[2], vertices[3]);
+    graph.addEdge(vertices[2], vertices[5]);
+    graph.addEdge(vertices[3], vertices[4]);
+    graph.addEdge(vertices[4], vertices[6]);
+    graph.addEdge(vertices[5], vertices[7]);
+    graph.addEdge(vertices[6], vertices[7]);
+    
+}
 //input: graph
 //output: minimum spanning tree
-function prim(){
+async function prim(){
 	console.log("prim running"); 
 	
 	//fetch user input from the html page
@@ -514,9 +631,16 @@ function prim(){
 				pq.enqueue(graph.edges[i], graph.edges[i].weight);
 				set.add(graph.edges[i]);
 				console.log("enqueued edge: vtx1- vtx2 - weight  " + graph.edges[i].vtx1.id + " " + graph.edges[i].vtx2.id + " " + graph.edges[i].weight);
-				
+				gv.highlightEdgePink(graph.edges[i]);
+			  	await sleep(1000);
 			}
 		}
+//dk if working ot not 
+		// for (let i = 0 ; i< set.size; i++){
+		// 	gv.highlightEdgePink(graph.edges[i]);
+		// 	await sleep(1000);
+		// }
+
 		
 		//iterate till all vertices are visited or there are no more edges in the priority queue
 		while ( !pq.isEmpty() ){ //- this considition is never used since we always break out of the loop but anyways 
@@ -524,10 +648,12 @@ function prim(){
 			let minEdge = pq.dequeue();
 			console.log("min edge vtx1 - vtx2 - weight: " + minEdge.vtx1.id + " " + minEdge.vtx2.id + " " + minEdge.weight);
 			
+			gv.highlightEdge(minEdge);
+			gv.unhighlightAllPinkEdges();
+			await sleep(1000);
 			// Add the vertices of the dequeued edge to the set of visited vertices
 			if (!visited.includes(minEdge.vtx1.id)) {
 			visited.push(minEdge.vtx1.id);
-			
 			console.log("just pushed ids " +  minEdge.vtx1.id);
 			console.log("visited ids: " + visited);  
 			startVertex  = minEdge.vtx1; 
@@ -557,7 +683,7 @@ function prim(){
 	}
 
 	console.log("final visited: " + visited);
-	costbox.innerHTML = "Minimum Cost: " + cost;
+	costbox.innerHTML = "Minimum Cost using Prim: " + cost;
 	return visited; 
 }
 
@@ -607,11 +733,11 @@ function hasCycle(){
 // problem with the cost being calculated and need to implement the cycle check thingy 
 //use union find for the cycle check thingy
 function kruskal(){
+	console.log("kruskal running");
 	let visited = [];
 	var cost = 0;
+	let costAdd = false;
 	
-
-
 	// Create a new priority queue
 	let pq = new PriorityQueue();
 
@@ -634,20 +760,44 @@ function kruskal(){
 		visited.push(minEdge.vtx1.id);
 		console.log("just pushed ids " +  minEdge.vtx1.id);
 		console.log("visited ids: " + visited);  
+		if (costAdd == false){
+			cost += parseInt(minEdge.weight);
+			costAdd = true;
+		}
 
-		
 		}
 		if (!visited.includes(minEdge.vtx2.id)) {
 		visited.push(minEdge.vtx2.id);
 		console.log("just pushed pt2 " +  minEdge.vtx1.id);
 		console.log("visited pt2 : " + visited);  
+		if (costAdd == false){
+			cost += parseInt(minEdge.weight);
+			costAdd = true;
 		}
+		}
+
+		costAdd = false;
+		console.log("cost: " + cost);
+		// break ; 
 		
 		//problme with the cost: dk where to add it so that it adds when it's supposed to
 		//add cycle check thingy ? 
-		console.log("cost: " + cost);
+		
 
-	}	
+	}
+	
+	console.log("final visited: " + visited);
+	costbox.innerHTML = "Minimum Cost using Kruskal: " + cost;
+	return visited; 
+}
+
+// clears whatever the user drew on the svg so far 
+function reset(){
+
+	console.log("resetting");
+	gv.clear();
+	graph.clear(); 
+
 
 }
 
@@ -723,8 +873,6 @@ class PriorityQueue {
   
 
 
-
-
 const svg = document.querySelector("#graph-box");
 const text = document.querySelector("#graph-text-box");
 const graph = new Graph(0);
@@ -732,3 +880,11 @@ const gv = new GraphVisualizer(graph, svg, text);
 const costbox = document.querySelector("#cost");
 
 
+const btnSimpleGraph = document.querySelector("#btn-simple-graph");
+btnSimpleGraph.addEventListener("click", function () {
+	//if smth in the svg, then clear svg and graph
+	gv.clear();
+	graph.clear(); //-> works 
+    buildSimpleExample(graph); // create a new example 
+    gv.draw(); 
+});

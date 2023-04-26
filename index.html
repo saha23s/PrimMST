@@ -17,12 +17,17 @@
         <rect width="100%" height="100%" fill="gray"/></svg> -->
       <input type="number" id="input-box" placeholder="Enter start vertex for Prim " />
       <button id="input-box"  onclick="prim()">Run Prim</button>
-      <button id="input-box"  onclick="hasCycle()">Run Kruskal</button>
+
+      <button id="input-box"  onclick="kruskal()">Run Kruskal</button>
+      <button id="input-box"  onclick="reset()">Clear Graph</button> 
+      <!-- clear graph not doin anything rn -->
       <p id="cost"></p>
       <p>Adjacency List:</p>
       <p id="graph-text-box"></p>
       <p>Weightage List:</p>
       <p id="weightage-paragraph"></p>
+      <!-- create a button to create a sample graph -->
+      <button id="btn-simple-graph">Add simple graph</button>
     </div>
   </body>
 </html>
