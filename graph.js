@@ -1,6 +1,9 @@
-// UPDATE: Prim solid done 
-//TO_DO: kruskal 
-// TO_DO: more in whassap 
+// UPDATE: Prim solid done
+//UPDATE: if you press add simple graph, new graph will be created using the circular layout (vertices are created randomly)
+
+//TO_DO: kruskal: cycle check and visualization 
+
+
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 function Graph(id) {
@@ -167,6 +170,8 @@ function Vertex(id, graph, x, y) {
 }
 
 // an object representing an edge in a graph
+// each edge has an associated unique identifier (id), the graph
+// containing the edge, as well as the two endpoints of the edge
 function Edge (vtx1, vtx2, id, weight) {
     this.vtx1 = vtx1;   // first endpoint of the edge
     this.vtx2 = vtx2;   // second endpoint of the edge
@@ -391,6 +396,7 @@ function GraphVisualizer (graph, svg, text) {
 
 	//clear the text box and anything drawn on the svg 
 	this.clear = function () {
+		this.unhighlightAll(); 
 		this.text.innerHTML = "";
 		this.vertexGroup.innerHTML = "";
 		this.edgeGroup.innerHTML = "";
@@ -398,6 +404,7 @@ function GraphVisualizer (graph, svg, text) {
 		this.edgeElts = {};
 		this.highVertices = [];
 		this.highEdges = [];
+
 	}
 
 
@@ -514,66 +521,72 @@ function GraphVisualizer (graph, svg, text) {
     }
         
 
+	/******************************************************
+	 * Methods to change layout 
+	 ***  ************************************************/
+
+	// Set layout where vertices are evenly spaced around a circle
+    // centered at (cx, cy) with radious r. The order of vertices
+    // around the circle is random.
+	this.setLayoutCircle = function (cx, cy, r) {
+		let vertices = this.graph.vertices;
+		let n = vertices.length;
+	
+		for (let i = 1; i < n; i++) {
+			let j = Math.floor(Math.random() * (i + 1));
+			let tmp = vertices[i];
+			vertices[i] = vertices[j];
+			vertices[j] = tmp;
+		}
+	
+		for (let i = 0; i < n; i++) {
+			this.graph.vertices[i].x = r * Math.cos(2 * Math.PI * i / n) + cx;
+			this.graph.vertices[i].y = r * Math.sin(2 * Math.PI * i / n) + cy;
+		}
+	}
+
+	this.drawCircle = function () {
+		this.setLayoutCircle(300, 200, 180);
+		this.draw();
+	}
 
 }
 
 
-  function sleep(ms) {
+function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
   }
 
 
-function buildSimpleExample () {
+//build a simple example of a graph
+function buildSimpleExample () { 
     vertices = [];
-	
-    let vtx = graph.createVertex(150,50);
-	vertices.push(vtx);
-	graph.addVertex(vtx);
 
-	let vtx2 = graph.createVertex(250,50);
-	vertices.push(vtx2);
-	graph.addVertex(vtx2);
+	// randomly generate the vertices while keeping the x and y coordinates within the svg 
+	for (let i = 0; i <= 6; i++) {
+		//making sure that the vertices and edges are not overlapping
+		const x = Math.floor(Math.random() * 550) + 1;
+		const y = Math.floor(Math.random() * 380) + 1;
+		let vtx = graph.createVertex(x, y);
+		vertices.push(vtx);
+		graph.addVertex(vtx);
+	}
 
-	let vtx3 = graph.createVertex(300,150);
-	vertices.push(vtx3);
-	graph.addVertex(vtx3);
-
-	let vtx4 = graph.createVertex(550,250);
-	vertices.push(vtx4);
-	graph.addVertex(vtx4);
-
-	let vtx5 = graph.createVertex(250,350);
-	vertices.push(vtx5);
-	graph.addVertex(vtx5);
-
-	let vtx6 = graph.createVertex(450,350);
-	vertices.push(vtx6);
-	graph.addVertex(vtx6);
-
-	let vtx7 = graph.createVertex(150,350);
-	vertices.push(vtx7);
-	graph.addVertex(vtx7);
-
-	let vtx8 = graph.createVertex(50,150);
-	vertices.push(vtx8);
-	graph.addVertex(vtx8);
-
-
-
-    graph.addEdge(vertices[0], vertices[3]);
-    graph.addEdge(vertices[0], vertices[5]);
-    graph.addEdge(vertices[0], vertices[6]);
-    graph.addEdge(vertices[1], vertices[2]);
-    graph.addEdge(vertices[1], vertices[4]);
-    graph.addEdge(vertices[1], vertices[7]);
-    graph.addEdge(vertices[2], vertices[3]);
-    graph.addEdge(vertices[2], vertices[5]);
-    graph.addEdge(vertices[3], vertices[4]);
-    graph.addEdge(vertices[4], vertices[6]);
-    graph.addEdge(vertices[5], vertices[7]);
-    graph.addEdge(vertices[6], vertices[7]);
+	//made changes in how the graph looks
+	graph.addEdge(vertices[0], vertices[2]); 
+	graph.addEdge(vertices[0], vertices[1]); 
+	graph.addEdge(vertices[1], vertices[3]);
+	graph.addEdge(vertices[1], vertices[4]);
+	graph.addEdge(vertices[2], vertices[5]);
+	graph.addEdge(vertices[3], vertices[2]);
+	graph.addEdge(vertices[3], vertices[5]);
+	graph.addEdge(vertices[4], vertices[6]);
+	graph.addEdge(vertices[4], vertices[5]);
+	graph.addEdge(vertices[5], vertices[6]);
+    
     
 }
+
 //input: graph
 //output: minimum spanning tree
 async function prim(){
@@ -621,6 +634,10 @@ async function prim(){
 	//should not run: if the edge set is empty or if all the vertices have been visited
 	while ( graph.edges.length != 0 && visited.length != graph.vertices.length ){
 		console.log("enqueuing edges");
+		for (let i = 0 ; i< set.size; i++){
+			gv.highlightEdgePink(graph.edges[i]);
+			await sleep(1000);
+		}
 		//enqueue all the edges that are connected to the start vertex 
 		for ( let i = 0; i < graph.edges.length; i++){
 			if ( graph.edges[i].vtx1.id == startVertex.id || graph.edges[i].vtx2.id == startVertex.id){
@@ -635,11 +652,6 @@ async function prim(){
 			  	await sleep(1000);
 			}
 		}
-//dk if working ot not 
-		// for (let i = 0 ; i< set.size; i++){
-		// 	gv.highlightEdgePink(graph.edges[i]);
-		// 	await sleep(1000);
-		// }
 
 		
 		//iterate till all vertices are visited or there are no more edges in the priority queue
@@ -694,19 +706,25 @@ async function prim(){
 }
 
 
+const mst = new Graph(0);
 // problem with the cost being calculated and need to implement the cycle check thingy 
 //use union find for the cycle check thingy
 function kruskal(){
 	console.log("kruskal running");
 	let visited = [];
 	var cost = 0;
-	let costAdd = false;
+	
+	//sort the edges in ascending order of their weights
+	// graph.edges.sort(function(a, b){return a.weight - b.weight});
+	// console.log(graph.edges);
+
 	
 	// Create a new priority queue
 	let pq = new PriorityQueue();
 
 	// Enqueue all edges in the graph
 	for (let i = 0; i < graph.edges.length; i++) {
+		console.log("enqueuing edges");
 		pq.enqueue(graph.edges[i], graph.edges[i].weight);
 	}
 
@@ -717,37 +735,43 @@ function kruskal(){
 		// Dequeue the edge with the minimum weight from the priority queue
 		let minEdge = pq.dequeue();
 		console.log("min edge vtx1 - vtx2 - weight: " + minEdge.vtx1.id + " " + minEdge.vtx2.id + " " + minEdge.weight);
-		
+		//check if the edge creates a cycle or not 
+		//if it does, then don't add it to the visited array and don't add the weight to the cost
+		if (cycleCheck(minEdge, mst) == true){
+			console.log("cycle detected");
+			continue;
+		}
+		//if it doesn't, then add it to the visited array and add the weight to the cost
+		else{
+			console.log("no cycle detected");
+			//check if the vertices of the edge are already in the visited array or not
+			//if they are, then don't add them to the visited array
+			if (visited.includes(minEdge.vtx1.id) && mst.vertices.includes(minEdge.vtx1.id) ){
+				visited.push(minEdge.vtx2.id);
+				mst.vertices.push(minEdge.vtx2.id);
+			}
+			//if they aren't, then add them to the visited array
+			if (visited.includes(minEdge.vtx2.id) && mst.vertices.includes(minEdge.vtx2.id)){
+				visited.push(minEdge.vtx1.id);
+				mst.vertices.push(minEdge.vtx1.id);
+			}
+			else{
+				visited.push(minEdge.vtx1.id);
+				visited.push(minEdge.vtx2.id);
+				mst.vertices.push(minEdge.vtx1.id);
+				mst.vertices.push(minEdge.vtx2.id);
 
-		// Add the vertices of the dequeued edge to the set of visited vertices
-		if (!visited.includes(minEdge.vtx1.id)) {
-		visited.push(minEdge.vtx1.id);
-		console.log("just pushed ids " +  minEdge.vtx1.id);
-		console.log("visited ids: " + visited);  
-		if (costAdd == false){
+				
+			}
+			mst.edges.push(minEdge);
 			cost += parseInt(minEdge.weight);
-			costAdd = true;
-		}
+			console.log("cost: " + cost); 
+			console.log("mst : " + mst.edges);
+
+			
 
 		}
-		if (!visited.includes(minEdge.vtx2.id)) {
-		visited.push(minEdge.vtx2.id);
-		console.log("just pushed pt2 " +  minEdge.vtx1.id);
-		console.log("visited pt2 : " + visited);  
-		if (costAdd == false){
-			cost += parseInt(minEdge.weight);
-			costAdd = true;
-		}
-		}
-
-		costAdd = false;
-		console.log("cost: " + cost);
-		// break ; 
 		
-		//problme with the cost: dk where to add it so that it adds when it's supposed to
-		//add cycle check thingy ? 
-		
-
 	}
 	
 	console.log("final visited: " + visited);
@@ -755,16 +779,21 @@ function kruskal(){
 	return visited; 
 }
 
+
+
+
 // clears whatever the user drew on the svg so far 
 function reset(){
 
 	console.log("resetting");
+	
 	gv.clear();
 	graph.clear(); 
 
 
 }
 
+// priority queue class using a min heap
 class PriorityQueue {
 	constructor() {
 	  this.heap = [];
@@ -843,12 +872,12 @@ const graph = new Graph(0);
 const gv = new GraphVisualizer(graph, svg, text);
 const costbox = document.querySelector("#cost");
 
-
 const btnSimpleGraph = document.querySelector("#btn-simple-graph");
 btnSimpleGraph.addEventListener("click", function () {
 	//if smth in the svg, then clear svg and graph
 	gv.clear();
 	graph.clear(); //-> works 
     buildSimpleExample(graph); // create a new example 
-    gv.draw(); 
+	gv.drawCircle(); 
+	
 });
