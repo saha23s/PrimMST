@@ -587,6 +587,87 @@ function buildSimpleExample () {
     
 }
 
+async function primTest () {
+
+	console.log("prim running"); 
+	
+	//fetch user input from the html page
+	let startVertex = document.getElementById("input-box").value;
+	console.log(startVertex);
+	
+	if (graph.vertices.length == 0){
+		alert("Add vertices first");
+		return;
+	}
+	else if (startVertex == ""){
+		alert("Enter a start vertex");
+		return;
+
+	}
+
+
+	//array to store visited vertices
+	let visited = [];
+	var cost = 0;
+	let costAdd = false;
+
+	//checking the valiidity of the start vertex and pushing it in the visited array	
+	if ( visited.length == 0 ){
+
+		for ( let i = 0; i < graph.vertices.length; i++){
+			if ( graph.vertices[i].id == startVertex){
+				startVertex = graph.vertices[i];
+				visited.push(graph.vertices[i].id);
+				break; 
+			}
+			else if ( i == graph.vertices.length - 1){
+				alert("Invalid start vertex");
+				return;
+			}
+		}
+
+	} 
+
+	let pq = new PriorityQueue();
+	let set = new Set();
+
+	while (visited.length < graph.vertices.length) {
+
+		// Enqueue all edges that are connected to visited vertices and not already visited
+		for (const edge of graph.edges) {
+		  if (
+			(visited.includes(edge.vtx1.id) || visited.includes(edge.vtx2.id)) &&
+			!set.has(edge)
+		  ) {
+			pq.enqueue(edge, edge.weight);
+			set.add(edge);
+			gv.highlightEdgePink(edge);
+			await sleep(1000);
+		  }
+		}
+	
+		if (pq.isEmpty()) {
+		  throw new Error("Graph is not connected");
+		}
+		  // Dequeue the edge with the minimum weight from the priority queue
+		  const minEdge = pq.dequeue();
+		  console.log("minEdge: " + minEdge);
+		  const unvisitedVertex =
+			visited.includes(minEdge.vtx1.id) ? minEdge.vtx2 : minEdge.vtx1;
+		  visited.push(unvisitedVertex.id);
+		  startVertex = unvisitedVertex;
+		  cost += minEdge.weight;
+		  gv.highlightEdge(minEdge);
+		  await sleep(1000);
+		  gv.unhighlightAllPinkEdges();
+		}
+	  
+		console.log("final visited: " + visited);
+		costbox.innerHTML = "Minimum Cost using Prim: " + cost;
+		return visited;
+	  
+
+}
 //input: graph
 //output: minimum spanning tree
 async function prim(){
@@ -614,6 +695,7 @@ async function prim(){
 
 	//checking the valiidity of the start vertex and pushing it in the visited array	
 	if ( visited.length == 0 ){
+
 		for ( let i = 0; i < graph.vertices.length; i++){
 			if ( graph.vertices[i].id == startVertex){
 				startVertex = graph.vertices[i];
@@ -632,7 +714,7 @@ async function prim(){
 	let set = new Set();
 
 	//should not run: if the edge set is empty or if all the vertices have been visited
-	while ( graph.edges.length != 0 && visited.length != graph.vertices.length ){
+	while ( graph.edges.length != 0 && visited.length < graph.vertices.length ){
 		console.log("enqueuing edges");
 		for (let i = 0 ; i< set.size; i++){
 			gv.highlightEdgePink(graph.edges[i]);
@@ -698,6 +780,9 @@ async function prim(){
 	costbox.innerHTML = "Minimum Cost using Prim: " + cost;
 	return visited; 
 }
+
+
+
 
 //check if the graph has a cycle 
 //input: graph
