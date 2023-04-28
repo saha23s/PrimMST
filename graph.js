@@ -72,14 +72,24 @@ function Graph(id) {
 			return null;
 		}
 		}
-
-	this.addEdgeIndividual = function(edge) {
-		this.edges.push(edge);
-		this.nextEdgeID++;
-		console.log("added edge (" + edge.vtx1.id + ", " + edge.vtx2.id + ") with weightage " + edge.weight);
+	this.gettingEdge = function(){
+		return this.edges;
 	}
 
-	
+	this.addEdgeWeight = function(vtx1, vtx2, id, weight){
+		if (!this.isEdge(vtx1, vtx2)) {
+			const edge = new Edge(vtx1, vtx2, id, weight);
+			this.nextEdgeID++;
+			vtx1.addNeighbor(vtx2);
+			vtx2.addNeighbor(vtx1);
+			this.edges.push(edge);
+			console.log("added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight);
+			return edge;
+		} else {
+			console.log("edge (" + vtx1.id + ", " + vtx2.id + ") not added because it is already in the graph");
+			return null;
+		}
+	}
 
     // determine if vtx1 and vtx2 are already an edge in this graph
     this.isEdge = function (vtx1, vtx2) {
@@ -452,6 +462,24 @@ function GraphVisualizer (graph, svg, text) {
 		elt.classList.remove("highlight-pink");	
 	}
 
+	this.highlightEdgeBlue = function (e) {
+		//if(!highlightedEdge[e.id] == true){
+			const elt = this.edgeElts[e.id];
+			elt.classList.add("highlight-blue");	
+		//}
+	}
+
+	this.unhighlightEdgeBlue = function (e) {
+		const elt = this.edgeElts[e.id];
+		elt.classList.remove("highlight-blue");	
+	}
+
+	this.unhighlightAllBlueEdges = function () {
+		for (e of this.graph.edges) {
+			this.unhighlightEdgeBlue(e);
+		}
+	}
+
 	this.unhighlightAllPinkEdges = function () {
 		for (e of this.graph.edges) {
 			this.unhighlightEdgePink(e);
@@ -722,11 +750,18 @@ async function prim(){
 //check if the graph has a cycle 
 //input: graph
 //output : boolean
+
 function hasCycle(edge, graph){
-	graph.addEdgeIndividual(edge);
 	graph.addVertex(edge.vtx1);
 	graph.addVertex(edge.vtx2);
+	let edgeList = graph.gettingEdge();
+
+	if(!edgeList.includes(edge)){
+		graph.addEdgeWeight(edge.vtx1, edge.vtx2, edge.id, edge.weight);
+	}
+	
 	let visited = {};
+
 	// set every vertex to false
 	for (let i = 0; i < graph.vertices.length; i++){
 		visited[graph.vertices[i].id] = false;
@@ -742,14 +777,9 @@ function hasCycle(edge, graph){
 	//enqueue all the edges that are connected to the start vertex
 	while(q.length != 0){
 		// prints every vertex in the queue in a readabe format
-		console.log("queue: ");
-		for (let i = 0; i < q.length; i++){
-			console.log(q[i].id);
-		}
 		let vtx = q.shift();
 		for (let i = 0; i < graph.edges.length; i++){
 			if (graph.edges[i].vtx1.id == vtx.id || graph.edges[i].vtx2.id == vtx.id){
-				console.log(graph.edges[i]);
 				if (set.has(graph.edges[i]) ){
 					console.log("edge already in set");
 					continue;
@@ -772,7 +802,7 @@ function hasCycle(edge, graph){
 			}
 		}
 	}
-	console.log("cycle: " + cycle);
+	console.log("cycle: " + "not found");
 	return false;
 	}
 
@@ -780,17 +810,13 @@ function hasCycle(edge, graph){
 
 // problem with the cost being calculated and need to implement the cycle check thingy 
 //use union find for the cycle check thingy
-function kruskal(){
+async function kruskal(){
 	console.log("kruskal running");
+	// tracks visited vertices
 	let visited = [];
 	var cost = 0;
 	// define a new graph
 	let mst = new Graph(1);
-	
-	//sort the edges in ascending order of their weights
-	// graph.edges.sort(function(a, b){return a.weight - b.weight});
-	// console.log(graph.edges);
-
 	
 	// Create a new priority queue
 	let pq = new PriorityQueue();
@@ -801,17 +827,31 @@ function kruskal(){
 		pq.enqueue(graph.edges[i], graph.edges[i].weight);
 	}
 
-	console.log(pq.heap); 
+	//console.log(pq.heap); 
 
 	//iterate till all vertices are visited or there are no more edges in the priority queue 
 	while (graph.edges.length != 0 && !pq.isEmpty() ){
 		// Dequeue the edge with the minimum weight from the priority queue
 		let minEdge = pq.dequeue();
+		gv.highlightEdge(minEdge);
+		await sleep(1000);
 		console.log("min edge vtx1 - vtx2 - weight: " + minEdge.vtx1.id + " " + minEdge.vtx2.id + " " + minEdge.weight);
 		//check if the edge creates a cycle or not 
 		//if it does, then don't add it to the visited array and don't add the weight to the cost
 		if (hasCycle(minEdge, mst) == true){
 			console.log("cycle detected");
+			// have to remove minEdge from the graph
+			
+			let removdEdge = mst.edges.pop();
+			// for(let i = 0; i < mst.edges.length; i++){
+			// 	gv.highlightEdgeBlue(mst.edges[i]);
+			// }
+			// await sleep(1000);
+			// gv.unhighlightAllBlueEdges();
+			// await sleep(1000);
+			gv.unhighlightEdge(removdEdge);
+			await sleep(1000);
+
 			continue;
 		}
 		//if it doesn't, then add it to the visited array and add the weight to the cost
@@ -833,22 +873,25 @@ function kruskal(){
 				visited.push(minEdge.vtx2.id);
 				mst.vertices.push(minEdge.vtx1.id);
 				mst.vertices.push(minEdge.vtx2.id);
-
-				
 			}
-			mst.edges.push(minEdge);
 			cost += parseInt(minEdge.weight);
 			console.log("cost: " + cost); 
-			console.log("mst : " + mst.edges);
-
-			
-
 		}
 		
 	}
+	// print mst vertices in a printable way
+	console.log("mst vertices: ");
+	for (let i = 0; i < mst.vertices.length; i++){
+		console.log(mst.vertices[i]);
+	}
+	// print mst edges in a printable way
+	console.log("mst edges: ");
+	for (let i = 0; i < mst.edges.length; i++){
+		console.log(mst.edges[i]);
+	}
 	
-	console.log("final visited: " + visited);
 	costbox.innerHTML = "Minimum Cost using Kruskal: " + cost;
+	console.log("visited" + visited);
 	return visited; 
 }
 
