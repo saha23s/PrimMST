@@ -1,5 +1,18 @@
 body{
     text-align: center;
+    background-color: rgb(255, 255, 255);
+    color: black;
+    margin: 0; 
+    padding: 0;
+
+}
+
+#explanation{
+    margin: 0 auto;
+    width: 80%;
+    text-align: left;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 svg {

@@ -4,34 +4,51 @@
     <meta charset="utf-8">
     <title>Minimum Spanning Tree</title>
     <link rel="stylesheet" href="style.css" type="text/css">
-    <script src="graph.js" defer></script>
   </head>
   <body>
-    <div id=root>
-      <h1>Visualizing Prim's and Kruskal's Algorithm for creating a Minimum Spanning Tree</h1>
-      <p>Click on the box below to add vertices and edges.You can: 
-        <br>
-          - Click on 'Add a Graph' to add a graph on the screen and run any visualization you want.</li>
-          <br> - Click on 'Clear Graph' to clear the svg box.</li>
-          <br> - Enter a start vertex and run the Prim's Algorithm</li>
-          <br> - Run Kruskal's Algorithm.</li>
-        
-      </p>
-      <svg id="graph-box" xmlns="http://www.w3.org/2000/svg" width="600" height="400">
-	      <rect width="100%" height="100%" fill="gray"/>
-      </svg>
-      <!-- <svg id="graph-box" xmlns="http://www.w3.org/2000/svg" width="600" height="400">
-        <rect width="100%" height="100%" fill="gray"/></svg> -->
-      <input type="number" id="input-box" placeholder="Enter start vertex for Prim" />
-      <button id="input-box"  onclick="prim()">Run Prim</button>
-      <button id="input-box"  onclick="kruskal()">Run Kruskal</button>
-      <button id="btn-simple-graph">Add a graph</button>
-      <button id="input-box"  onclick="reset()">Clear Graph</button> 
-      <p id="cost"></p>
-      <p>Adjacency List:</p>
-      <p id="graph-text-box"></p>
-      <p>Weightage List:</p>
-      <p id="weightage-paragraph"></p>
+    <div id="root">
+       
+        <h1>Team Ctrl Alt Dlt</h1>
+        <h2>Team members:</h2>
+        Marima Fatima<br>Ramisa Tahsin Rahman<br>Sulagna Saha
     </div>
+    <h3>Topic: Minimum Spanning Tree</h3>
+    <div id="explanation">
+        <!-- 
+        // references  -->
+        
+        <p>Minimum spanning tree(mst) is a tree in a graph that connects all the vertices together with the minimum possible total edge weight. 
+            It is a subgraph of the original graph. It is used in many applications such as network design, circuit design, clustering, etc.
+        MST application goes beyond computer science such as fintech, economics, chemistry, etc. Some applications that motivated us to work on MST are: 
+    <ul>
+        <li>It is used in network design to find the most efficient way to connect nodes in a network while minimizing the cost of constructing the connections.</li>
+        <li>In the finance industry, risk managers can identify potential sources of systemic risk and take measures to mitigate them.</li>
+        <li>It's a fundamental tool in solving optimization problem. </li>
+    </ul>
+    <strong>Purpose: Clearly demonstrate MST using Prim & Kruskal's algorithm since these are the most commonly used.</strong>
+    <br><br><strong>Prim's Algorithm:</strong>
+    <p>Prim's algorithm is a greedy algorithm that finds a minimum spanning tree for a weighted undirected graph. It finds a subset of the edges that forms a tree that includes every vertex, where the total weight of all the edges in the tree is minimized. 
+    <br>The algorithm operates by building this tree one vertex at a time, starting from an arbitrary starting vertex(chosen by user), at each step adding the cheapest possible connection from the tree to another vertex.</p>
+    </p>
+    <strong>Kruskal's Algorithm:</strong>
+    <p>Kruskal's algorithm is a greedy algorithm that finds a minimum spanning tree for a weighted undirected graph. 
+        It finds a subset of the edges that forms a tree that includes every vertex, where the total weight of all the edges in the tree is minimized.
+        It sorts the edges by weight and progressively adds them to the growing forest, taking care not to add any edges that would create a cycle.
+        </p>
+
+    <a href="interactive.html">Click here to go to the interactive page</a><br>
+    <h3>Techincal Development of our website:</h3>
+    <p>TBD</p>
+    <h3>References:</h3>
+    <ul>
+        <li> <a href="https://www.tutorialspoint.com/The-PriorityQueue-Class-in-Javascript">The-PriorityQueue-Class-in-Javascript</a></li>
+        <li> <a href= "https://www.cs.usfca.edu/~galles/visualization/Prim.html">Prim's Algorithm Visualization</a></li>
+        <li> <a href="https://www.cs.usfca.edu/~galles/visualization/Kruskal.html">Kruskal's Algorithm Visualization</a></li>
+    </ul>
+    </div>
+
+    
+
+   
   </body>
 </html>
