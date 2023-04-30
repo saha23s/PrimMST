@@ -417,7 +417,7 @@ function GraphVisualizer (graph, svg, text) {
 		this.highVertices = [];
 		this.highEdges = [];
 	}
-
+	
 
     /*********************************************************
      * Methods to (un)highlight and (un) mute vertices/edges *
@@ -504,6 +504,7 @@ function GraphVisualizer (graph, svg, text) {
     }
 
     this.unhighlightAll = function () {
+	console.log("unhighlighting all");
 	this.unhighlightAllVertices();
 	this.unhighlightAllEdges();
     }
@@ -585,14 +586,14 @@ function GraphVisualizer (graph, svg, text) {
 }
 
 
-  function sleep(ms) {
-	return new Promise(resolve => setTimeout(resolve, ms));
-  }
+function sleep(ms) {
+return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 
 
 //build a simple example of a graph
 function buildSimpleExample () { 
-
 
     vertices = [];
 
@@ -606,7 +607,10 @@ function buildSimpleExample () {
 		graph.addVertex(vtx);
 	}
 
-	//made changes in how the graph looks
+
+
+
+	// //made changes in how the graph looks
 	graph.addEdge(vertices[0], vertices[2]); 
 	graph.addEdge(vertices[0], vertices[1]); 
 	graph.addEdge(vertices[1], vertices[3]);
@@ -620,6 +624,7 @@ function buildSimpleExample () {
     
     
 }
+
 
 
 //input: graph
@@ -746,7 +751,6 @@ async function prim(){
 
 
 
-
 //check if the graph has a cycle 
 //input: graph
 //output : boolean
@@ -805,7 +809,6 @@ function hasCycle(edge, graph){
 	console.log("cycle: " + "not found");
 	return false;
 	}
-
 
 
 // problem with the cost being calculated and need to implement the cycle check thingy 
@@ -989,7 +992,7 @@ const btnSimpleGraph = document.querySelector("#btn-simple-graph");
 btnSimpleGraph.addEventListener("click", function () {
 	//if smth in the svg, then clear svg and graph
 	gv.clear();
-	graph.clear(); //-> works 
+	graph.clear(); 
     buildSimpleExample(graph); // create a new example 
     gv.drawCircle(); 
 });

@@ -9,16 +9,23 @@
   <body>
     <div id=root>
       <h1>Visualizing Prim's and Kruskal's Algorithm for creating a Minimum Spanning Tree</h1>
-      <p>Click on the box below to add vertices and edges.</p>
+      <p>Click on the box below to add vertices and edges.You can: 
+        <br>
+          - Click on 'Add a Graph' to add a graph on the screen and run any visualization you want.</li>
+          <br> - Click on 'Clear Graph' to clear the svg box.</li>
+          <br> - Enter a start vertex and run the Prim's Algorithm</li>
+          <br> - Run Kruskal's Algorithm.</li>
+        
+      </p>
       <svg id="graph-box" xmlns="http://www.w3.org/2000/svg" width="600" height="400">
 	      <rect width="100%" height="100%" fill="gray"/>
       </svg>
       <!-- <svg id="graph-box" xmlns="http://www.w3.org/2000/svg" width="600" height="400">
         <rect width="100%" height="100%" fill="gray"/></svg> -->
-      <input type="number" id="input-box" placeholder="Enter start vertex for Prim " />
+      <input type="number" id="input-box" placeholder="Enter start vertex for Prim" />
       <button id="input-box"  onclick="prim()">Run Prim</button>
       <button id="input-box"  onclick="kruskal()">Run Kruskal</button>
-      <button id="btn-simple-graph">Add simple graph</button>
+      <button id="btn-simple-graph">Add a graph</button>
       <button id="input-box"  onclick="reset()">Clear Graph</button> 
       <p id="cost"></p>
       <p>Adjacency List:</p>
