@@ -445,39 +445,17 @@ function GraphVisualizer (graph, svg, text) {
 
     this.highlightEdge = function (e) {
 	const elt = this.edgeElts[e.id];
-	// make this edge in the highlightedEdge true
-	highlightedEdge[e.id] = true;
 	elt.classList.add("highlight");	
     }
 
 	this.highlightEdgePink = function (e) {
-		if(!highlightedEdge[e.id] == true){
 			const elt = this.edgeElts[e.id];
 			elt.classList.add("highlight-pink");	
-		}
 	}
 
 	this.unhighlightEdgePink = function (e) {
 		const elt = this.edgeElts[e.id];
 		elt.classList.remove("highlight-pink");	
-	}
-
-	this.highlightEdgeBlue = function (e) {
-		//if(!highlightedEdge[e.id] == true){
-			const elt = this.edgeElts[e.id];
-			elt.classList.add("highlight-blue");	
-		//}
-	}
-
-	this.unhighlightEdgeBlue = function (e) {
-		const elt = this.edgeElts[e.id];
-		elt.classList.remove("highlight-blue");	
-	}
-
-	this.unhighlightAllBlueEdges = function () {
-		for (e of this.graph.edges) {
-			this.unhighlightEdgeBlue(e);
-		}
 	}
 
 	this.unhighlightAllPinkEdges = function () {
@@ -625,7 +603,11 @@ function buildSimpleExample () {
 //input: graph
 //output: minimum spanning tree
 async function prim(){
-	console.log("prim running"); 
+	gv.unhighlightAll();
+	await sleep(1000);
+	
+	console.log("prim running");
+	let primEdges = []; 
 	
 	//fetch user input from the html page
 	let startVertex = document.getElementById("input-box").value;
@@ -638,7 +620,6 @@ async function prim(){
 	else if (startVertex == ""){
 		alert("Enter a start vertex");
 		return;
-
 	}
 
 
@@ -648,7 +629,7 @@ async function prim(){
 	let costAdd = false;
 
 	//checking the valiidity of the start vertex and pushing it in the visited array	
-	if ( visited.length == 0 ){
+	if (visited.length == 0 ){
 
 		for ( let i = 0; i < graph.vertices.length; i++){
 			if ( graph.vertices[i].id == startVertex){
@@ -672,12 +653,13 @@ async function prim(){
 		console.log("enqueuing edges");
 		for (let i = 0 ; i< set.size; i++){
 			//to-do: if it is highlighted, dont highlightPink it: add any highlighted one in the array and then cross - check
-			if ( graph.edges[i].highlighted == true){
+			if (graph.edges[i].highlighted == true){
 				continue;
 			}
-
-			gv.highlightEdgePink(graph.edges[i]);
-			await sleep(1000);
+			if(!primEdges.includes(graph.edges[i])){
+				gv.highlightEdgePink(graph.edges[i]);
+				await sleep(1000);
+			}
 		}
 		//enqueue all the edges that are connected to the start vertex 
 		for ( let i = 0; i < graph.edges.length; i++){
@@ -689,8 +671,10 @@ async function prim(){
 				pq.enqueue(graph.edges[i], graph.edges[i].weight);
 				set.add(graph.edges[i]);
 				console.log("enqueued edge: vtx1- vtx2 - weight  " + graph.edges[i].vtx1.id + " " + graph.edges[i].vtx2.id + " " + graph.edges[i].weight);
-				gv.highlightEdgePink(graph.edges[i]);
-			  	await sleep(1000);
+				if(!primEdges.includes(graph.edges[i])){
+					gv.highlightEdgePink(graph.edges[i]);
+					await sleep(1000);
+				}
 			}
 		}
 
@@ -714,6 +698,7 @@ async function prim(){
 			if (costAdd == false){
 				cost += parseInt(minEdge.weight);
 				costAdd = true;
+				primEdges.push(minEdge);
 				gv.highlightEdge(minEdge);
 				await sleep(1000);
 			}
@@ -727,6 +712,7 @@ async function prim(){
 			if (costAdd == false){
 				cost += parseInt(minEdge.weight);
 				costAdd = true;
+				primEdges.push(minEdge);
 				gv.highlightEdge(minEdge);
 				await sleep(1000);
 			}
@@ -811,6 +797,9 @@ function hasCycle(edge, graph){
 // problem with the cost being calculated and need to implement the cycle check thingy 
 //use union find for the cycle check thingy
 async function kruskal(){
+	gv.unhighlightAll();
+	await sleep(1000);
+
 	console.log("kruskal running");
 	// tracks visited vertices
 	let visited = [];
@@ -826,8 +815,6 @@ async function kruskal(){
 		console.log("enqueuing edges");
 		pq.enqueue(graph.edges[i], graph.edges[i].weight);
 	}
-
-	//console.log(pq.heap); 
 
 	//iterate till all vertices are visited or there are no more edges in the priority queue 
 	while (graph.edges.length != 0 && !pq.isEmpty() ){
