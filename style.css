@@ -1,6 +1,6 @@
 body{
     text-align: center;
-    background-color: rgb(248, 233, 199);
+    background-color: rgba(255, 247, 227, 0.639);
     color: black;
     margin: 0; 
     padding: 0;
@@ -46,7 +46,7 @@ svg {
 .weight {
     font-size: 24px;
     font-family: Arial;
-    fill: red;
+    fill: yellow;
 }
 
 .muted {
@@ -54,7 +54,7 @@ svg {
 }
 
 .highlight {
-    stroke: red;
+    stroke: blue;
     stroke-width: 5;
 }
 
@@ -73,7 +73,7 @@ svg {
  *************************************************************/
 
 .overlay-vertex {
-    r: 15px;
+    
     stroke: yellow;
     fill: rgb(0, 0, 0, 20%);
     stroke-width: 5;
