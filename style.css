@@ -44,10 +44,13 @@ svg {
 
 
 .weight {
-    font-size: 24px;
+    font-size: 17px;
     font-family: Arial;
-    fill: yellow;
+
+    /* fill: black; */
+    /* background-color: #fff; */
 }
+
 
 .muted {
     stroke: rgb(200,200,200);

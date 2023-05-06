@@ -380,29 +380,43 @@ function GraphVisualizer (graph, svg, text) {
 
     // add an edge to the visualization
     this.addEdgeUser = function (edge) {
-	const vtx1 = edge.vtx1;
-	const vtx2 = edge.vtx2;
-	const edgeElt = document.createElementNS(SVG_NS, "line");
-	edgeElt.setAttributeNS(null, "x1", vtx1.x);
-	edgeElt.setAttributeNS(null, "y1", vtx1.y);
-	edgeElt.setAttributeNS(null, "x2", vtx2.x);
-	edgeElt.setAttributeNS(null, "y2", vtx2.y);
-	edgeElt.classList.add("edge");
-	this.edgeElts[edge.id] = edgeElt;
-	this.edgeGroup.appendChild(edgeElt);
-	this.updateTextBox(this.graph.adjacencyLists());
-
-	const weightElt = document.createElementNS(SVG_NS, "text");
-	weightElt.setAttributeNS(null, "x", (vtx1.x + vtx2.x) / 2);
-	weightElt.setAttributeNS(null, "y", (vtx1.y + vtx2.y) / 2);
-	weightElt.setAttributeNS(null, "text-anchor", "middle");
-	weightElt.setAttributeNS(null, "dominant-baseline", "middle");
-	weightElt.classList.add("weight");
-	weightElt.textContent = edge.weight;
-	this.edgeGroup.appendChild(weightElt);
-
-    }
-
+		const vtx1 = edge.vtx1;
+		const vtx2 = edge.vtx2;
+		const edgeElt = document.createElementNS(SVG_NS, "line");
+		edgeElt.setAttributeNS(null, "x1", vtx1.x);
+		edgeElt.setAttributeNS(null, "y1", vtx1.y);
+		edgeElt.setAttributeNS(null, "x2", vtx2.x);
+		edgeElt.setAttributeNS(null, "y2", vtx2.y);
+		edgeElt.classList.add("edge");
+		this.edgeElts[edge.id] = edgeElt;
+		this.edgeGroup.appendChild(edgeElt);
+		this.updateTextBox(this.graph.adjacencyLists());
+	
+		const weightElt = document.createElementNS(SVG_NS, "g");
+		const weightRect = document.createElementNS(SVG_NS, "rect");
+		const weightText = document.createElementNS(SVG_NS, "text");
+	
+		const rectWidth = 25; // adjust width as needed
+		const rectHeight = 25; // adjust height as needed
+	
+		weightRect.setAttributeNS(null, "x", (vtx1.x + vtx2.x) / 2 - rectWidth / 2);
+		weightRect.setAttributeNS(null, "y", (vtx1.y + vtx2.y) / 2 - rectHeight / 2);
+		weightRect.setAttributeNS(null, "width", rectWidth);
+		weightRect.setAttributeNS(null, "height", rectHeight);
+		weightRect.setAttributeNS(null, "fill", "gray"); // set background color as needed
+	
+		weightText.setAttributeNS(null, "x", (vtx1.x + vtx2.x) / 2 - 2);
+		weightText.setAttributeNS(null, "y", (vtx1.y + vtx2.y) / 2 + 5); // adjust y position as needed
+		weightText.setAttributeNS(null, "text-anchor", "middle");
+		//weightText.setAttributeNS(null, "dominant-baseline", "middle");
+		weightText.classList.add("weight");
+		weightText.textContent = edge.weight;
+	
+		weightElt.appendChild(weightRect);
+		weightElt.appendChild(weightText);
+		this.edgeGroup.appendChild(weightElt);
+		}
+	
     this.updateTextBox = function (str) {
 	this.text.innerHTML = str;
     }
