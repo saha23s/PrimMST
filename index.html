@@ -1,3 +1,13 @@
+<!-- //TO_DO: color -> make it visually pleasing 
+// technical development -> add more 
+// two svg boxes -> one for prim & one for kruskal
+// make the edges noticeable -> add animation
+// add text explaining what is happening 
+// different color to check and to add in the mst 
+//make the sizes of everything little bigger 
+// maybe adding the trees later on sepearately. 
+// dont add an edge if the user doesnt give the weight  -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -12,10 +22,8 @@
         <h2>Team members:</h2>
         Marima Fatima<br>Ramisa Tahsin Rahman<br>Sulagna Saha
     </div>
-    <h3>Topic: Minimum Spanning Tree</h3>
+    <h2>Topic: Minimum Spanning Tree</h2>
     <div id="explanation">
-        <!-- 
-        // references  -->
         
         <p>Minimum spanning tree(mst) is a tree in a graph that connects all the vertices together with the minimum possible total edge weight. 
             It is a subgraph of the original graph. It is used in many applications such as network design, circuit design, clustering, etc.
@@ -25,18 +33,17 @@
         <li>In the finance industry, risk managers can identify potential sources of systemic risk and take measures to mitigate them.</li>
         <li>It's a fundamental tool in solving optimization problem. </li>
     </ul>
-    <strong>Purpose: Clearly demonstrate MST using Prim & Kruskal's algorithm since these are the most commonly used.</strong>
+    <strong>Purpose: Demonstrate deriving MST from a given graph using Prim & Kruskal's algorithm.</strong>
     <br><br><strong>Prim's Algorithm:</strong>
     <p>Prim's algorithm is a greedy algorithm that finds a minimum spanning tree for a weighted undirected graph. It finds a subset of the edges that forms a tree that includes every vertex, where the total weight of all the edges in the tree is minimized. 
     <br>The algorithm operates by building this tree one vertex at a time, starting from an arbitrary starting vertex(chosen by user), at each step adding the cheapest possible connection from the tree to another vertex.</p>
-    </p>
+    
     <strong>Kruskal's Algorithm:</strong>
     <p>Kruskal's algorithm is a greedy algorithm that finds a minimum spanning tree for a weighted undirected graph. 
         It finds a subset of the edges that forms a tree that includes every vertex, where the total weight of all the edges in the tree is minimized.
         It sorts the edges by weight and progressively adds them to the growing forest, taking care not to add any edges that would create a cycle.
         </p>
-
-    <a href="interactive.html">Click here to go to the interactive page</a><br>
+    <button id="interactive" onclick="window.location.href='interactive.html'">Go to interactive page</button>
     <h3>Techincal Development of our website:</h3>
     <p>
         We used HTML, CSS, Javascript to develop our website. We used HTML to create the skeleton of the website, CSS to style the website & Javascript to implement the algorithms.  
@@ -47,7 +54,7 @@
             <li>Disjoint Set to keep track of visited vertices.</li>
 
         </ul>
-    </p>
+   
     <h3>References:</h3>
     <ul>
         <li> <a href="https://www.tutorialspoint.com/The-PriorityQueue-Class-in-Javascript">The-PriorityQueue-Class-in-Javascript</a></li>

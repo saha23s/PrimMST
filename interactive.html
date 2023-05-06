@@ -8,23 +8,23 @@
   </head>
   <body>
     <div id=root>
-      <h1>Visualizing Prim's and Kruskal's Algorithm for creating a Minimum Spanning Tree</h1>
-      <p>Click on the box below to add vertices and edges.You can: 
+      <h2>Visualizing Prim's and Kruskal's Algorithm for creating a Minimum Spanning Tree</h2>
+      <p>User Manual: <br> - Click on the box below to add vertices and edges.You can: 
         <br>
-          - Click on 'Add a Graph' to add a graph on the screen and run any visualization you want.</li>
-          <br> - Click on 'Clear Graph' to clear the svg box.</li>
-          <br> - Enter a start vertex and run the Prim's Algorithm</li>
-          <br> - Run Kruskal's Algorithm.</li>
+          - Click on 'Add a Graph' to add a graph on the screen and run any visualization you want.
+          <br> - Click on 'Clear Graph' to clear the svg box.
+          <br> - Enter a start vertex and run the Prim's Algorithm
+          <br> - Run Kruskal's Algorithm.
       </p>
       <p>The purple edges are the ones that the algorithm is checking for and the blue edges are the edges that build the MST.</p>
       <svg id="graph-box" xmlns="http://www.w3.org/2000/svg" width="600" height="400">
-	      <rect width="100%" height="100%" fill="gray"/>
+	      <rect width="100%" height="100%" fill="#afbfce"/>
       </svg>
-      <input type="number" id="input-box" placeholder="Enter start vertex for Prim" />
-      <button id="input-box"  onclick="prim()">Run Prim</button>
-      <button id="input-box"  onclick="kruskal()">Run Kruskal</button>
+      <input type="number" id="input-box" placeholder="Enter start vertex for Prim" >
+      <button   onclick="prim()">Run Prim</button>
+      <button  onclick="kruskal()">Run Kruskal</button>
       <button id="btn-simple-graph">Add a graph</button>
-      <button id="input-box"  onclick="reset()">Clear Graph</button> 
+      <button  onclick="reset()">Clear Graph</button> 
       <p id="cost"></p>
       <p>Adjacency List:</p>
       <p id="graph-text-box"></p>

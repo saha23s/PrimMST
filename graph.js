@@ -30,30 +30,71 @@ function Graph(id) {
     // create and return an edge between vertices vtx1 and vtx2;
     // returns existing edge if there is already an edge between the
     // two vertices
-    this.addEdgeUser = function(vtx1, vtx2) {
-	if (!this.isEdge(vtx1, vtx2)) {
-		const weight = prompt("Enter weightage for edge (" + vtx1.id + ", " + vtx2.id + "):");
-	    const edge = new Edge(vtx1, vtx2, this.nextEdgeID, parseInt(weight));
-	    this.nextEdgeID++;
-	    vtx1.addNeighbor(vtx2);
-	    vtx2.addNeighbor(vtx1);
-	    //vtx1.addEdge(edge);  // adding edge to the set of edges incident to vtx1
-		//vtx2.addEdge(edge);  // adding edge to the set of edges incident to vtx2
-	    this.edges.push(edge);
-	    console.log("added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight);
+    // this.addEdgeUser = function(vtx1, vtx2) {
+	// if (!this.isEdge(vtx1, vtx2)) {
+	// 	const weight = prompt("Enter weightage for edge (" + vtx1.id + ", " + vtx2.id + "):");
+	//     const edge = new Edge(vtx1, vtx2, this.nextEdgeID, parseInt(weight));
+	//     this.nextEdgeID++;
+	//     vtx1.addNeighbor(vtx2);
+	//     vtx2.addNeighbor(vtx1);
+	//     //vtx1.addEdge(edge);  // adding edge to the set of edges incident to vtx1
+	// 	//vtx2.addEdge(edge);  // adding edge to the set of edges incident to vtx2
+	//     this.edges.push(edge);
+	//     console.log("added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight);
 
-		// Update weightage paragraph
-		const weightageParagraph = document.getElementById("weightage-paragraph");
-		const existingContent = weightageParagraph.innerHTML;
-		const newContent = existingContent + "<br>Added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight;
-		weightageParagraph.innerHTML = newContent;
+	// 	// Update weightage paragraph
+	// 	const weightageParagraph = document.getElementById("weightage-paragraph");
+	// 	const existingContent = weightageParagraph.innerHTML;
+	// 	const newContent = existingContent + "<br>Added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight;
+	// 	weightageParagraph.innerHTML = newContent;
 	    
-		return edge;
-	} else {
-	    console.log("edge (" + vtx1.id + ", " + vtx2.id + ") not added because it is already in the graph");
-	    return null;
+	// 	return edge;
+	// } else {
+	//     console.log("edge (" + vtx1.id + ", " + vtx2.id + ") not added because it is already in the graph");
+	//     return null;
+	// }
+    // }
+
+
+	//new code: 
+	// add an edge to the visualization
+    this.addEdgeUser = function (edge) {
+		const vtx1 = edge.vtx1;
+		const vtx2 = edge.vtx2;
+		const edgeElt = document.createElementNS(SVG_NS, "line");
+		edgeElt.setAttributeNS(null, "x1", vtx1.x);
+		edgeElt.setAttributeNS(null, "y1", vtx1.y);
+		edgeElt.setAttributeNS(null, "x2", vtx2.x);
+		edgeElt.setAttributeNS(null, "y2", vtx2.y);
+		edgeElt.classList.add("edge");
+		this.edgeElts[edge.id] = edgeElt;
+		this.edgeGroup.appendChild(edgeElt);
+		this.updateTextBox(this.graph.adjacencyLists());
+	
+		const weightElt = document.createElementNS(SVG_NS, "g");
+		const weightRect = document.createElementNS(SVG_NS, "rect");
+		const weightText = document.createElementNS(SVG_NS, "text");
+	
+		const rectWidth = 25; // adjust width as needed
+		const rectHeight = 25; // adjust height as needed
+	
+		weightRect.setAttributeNS(null, "x", (vtx1.x + vtx2.x) / 2 - rectWidth / 2);
+		weightRect.setAttributeNS(null, "y", (vtx1.y + vtx2.y) / 2 - rectHeight / 2);
+		weightRect.setAttributeNS(null, "width", rectWidth);
+		weightRect.setAttributeNS(null, "height", rectHeight);
+		weightRect.setAttributeNS(null, "fill", "#afbfce"); // set background color as needed
+	
+		weightText.setAttributeNS(null, "x", (vtx1.x + vtx2.x) / 2 - 2);
+		weightText.setAttributeNS(null, "y", (vtx1.y + vtx2.y) / 2 + 5); // adjust y position as needed
+		weightText.setAttributeNS(null, "text-anchor", "middle");
+		//weightText.setAttributeNS(null, "dominant-baseline", "middle");
+		weightText.classList.add("weight");
+		weightText.textContent = edge.weight;
+	
+		weightElt.appendChild(weightRect);
+		weightElt.appendChild(weightText);
+		this.edgeGroup.appendChild(weightElt);
 	}
-    }
 
 	this.addEdge = function(vtx1, vtx2) {
 		if (!this.isEdge(vtx1, vtx2)) {
