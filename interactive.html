@@ -9,17 +9,30 @@
   <body>
     <div id=root>
       <h2>Visualizing Prim's and Kruskal's Algorithm for creating a Minimum Spanning Tree</h2>
-      <p>User Manual: <br> - Click on the box below to add vertices and edges.You can: 
-        <br>
-          - Click on 'Add a Graph' to add a graph on the screen and run any visualization you want.
-          <br> - Click on 'Clear Graph' to clear the svg box.
-          <br> - Enter a start vertex and run the Prim's Algorithm
-          <br> - Run Kruskal's Algorithm.
+      <div id = "user-manual">
+      <p>User Manual: 
+          <br> ~ Click on the box below to add vertices and edges.
+          <br> ~ Click on 'Add a Graph' to add a graph on the screen and run any visualization you want.
+          <br> ~ Click on 'Clear Graph' to clear the svg box.
+          <br> ~ Enter a start vertex and run the Prim's Algorithm
+          <br> ~ Run Kruskal's Algorithm.
       </p>
-      <p>The purple edges are the ones that the algorithm is checking for and the blue edges are the edges that build the MST.</p>
-      <svg id="graph-box" xmlns="http://www.w3.org/2000/svg" width="600" height="400">
-	      <rect width="100%" height="100%" fill="#afbfce"/>
-      </svg>
+      <p>The --color-- edges are the ones that the algorithm is checking for and the --color-- edges are the edges that build the MST.</p>
+      </div>
+
+      <div id = "two-svg">
+        <div id = "run-prim">
+          <svg id="graph-box" xmlns="http://www.w3.org/2000/svg" width="600" height="400">
+            <rect width="100%" height="100%" fill="#afbfce"/>
+          </svg>
+        </div>
+      <div>
+        <svg id="graph-box" xmlns="http://www.w3.org/2000/svg" width="600" height="400">
+          <rect width="100%" height="100%" fill="#afbfce"/>
+        </svg>
+      </div>
+
+    </div>
       <input type="number" id="input-box" placeholder="Enter start vertex for Prim" >
       <button   onclick="prim()">Run Prim</button>
       <button  onclick="kruskal()">Run Kruskal</button>
