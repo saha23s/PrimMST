@@ -444,7 +444,7 @@ function GraphVisualizer (graph, svg, text) {
 		weightRect.setAttributeNS(null, "y", (vtx1.y + vtx2.y) / 2 - rectHeight / 2);
 		weightRect.setAttributeNS(null, "width", rectWidth);
 		weightRect.setAttributeNS(null, "height", rectHeight);
-		weightRect.setAttributeNS(null, "fill", "gray"); // set background color as needed
+		weightRect.setAttributeNS(null, "fill", "#afbfce"); // set background color as needed
 	
 		weightText.setAttributeNS(null, "x", (vtx1.x + vtx2.x) / 2 - 2);
 		weightText.setAttributeNS(null, "y", (vtx1.y + vtx2.y) / 2 + 5); // adjust y position as needed
