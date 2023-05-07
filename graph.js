@@ -1,6 +1,8 @@
-//TO_DO: kruskal 
-
 const SVG_NS = "http://www.w3.org/2000/svg";
+
+// flag to indicate if an algorithm is running
+let algoRunning = false;
+
 
 function Graph(id) {
     this.id = id;            // (unique) ID of this graph
@@ -30,28 +32,31 @@ function Graph(id) {
     // create and return an edge between vertices vtx1 and vtx2;
     // returns existing edge if there is already an edge between the
     // two vertices
-
 	this.addEdgeUser = function(vtx1, vtx2) {
-	if (!this.isEdge(vtx1, vtx2)) {
-		const weight = prompt("Enter weightage for edge (" + vtx1.id + ", " + vtx2.id + "):");
-	    const edge = new Edge(vtx1, vtx2, this.nextEdgeID, parseInt(weight));
-	    this.nextEdgeID++;
-	    vtx1.addNeighbor(vtx2);
-	    vtx2.addNeighbor(vtx1);
+	if (!this.isEdge(vtx1, vtx2) && !algoRunning) {
+		
+			const weight = prompt("Enter weightage for edge (" + vtx1.id + ", " + vtx2.id + "):");
+			const edge = new Edge(vtx1, vtx2, this.nextEdgeID, parseInt(weight));
+			this.nextEdgeID++;
+			vtx1.addNeighbor(vtx2);
+			vtx2.addNeighbor(vtx1);
+			
+			if ( weight == null || weight == "" || isNaN(weight) || weight < 0) {
+				return; 
+			}
 
-		if ( weight == null || weight == "" || isNaN(weight) || weight < 0) {
-			return; 
-		}
+			this.edges.push(edge);
+			console.log("added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight);
+			// Update weightage paragraph
+			const weightageParagraph = document.getElementById("weightage-paragraph");
+			const existingContent = weightageParagraph.innerHTML;
+			const newContent = existingContent + "<br>Added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight;
+			weightageParagraph.innerHTML = newContent;
+			
+			return edge;
 
-	    this.edges.push(edge);
-	    console.log("added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight);
-		// Update weightage paragraph
-		const weightageParagraph = document.getElementById("weightage-paragraph");
-		const existingContent = weightageParagraph.innerHTML;
-		const newContent = existingContent + "<br>Added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight;
-		weightageParagraph.innerHTML = newContent;
-	    
-		return edge;
+		
+		
 	} else {
 	    console.log("edge (" + vtx1.id + ", " + vtx2.id + ") not added because it is already in the graph");
 	    return null;
@@ -217,8 +222,13 @@ function GraphVisualizer (graph, svg, text) {
 
     // define the behavior for clicking on the svg element
     this.svg.addEventListener("click", (e) => {
-	// create a new vertex
-	this.createVertex(e);
+	// create a new vertex 
+	if (!algoRunning){
+		this.createVertex(e);
+	}else {
+		console.log("MST algorithm is running, cannot add vertex");
+	}
+	
     });
 
     // sets of highlighted/muted vertices and edges
@@ -281,6 +291,7 @@ function GraphVisualizer (graph, svg, text) {
 		this.addVertex(vtx);
 		this.graph.addVertex(vtx);
 		this.updateTextBox(graph.adjacencyLists());
+
     }
 
     // add a vertex to the visualization by creating an svg element
@@ -308,21 +319,28 @@ function GraphVisualizer (graph, svg, text) {
 	});
 
 	// define behavior when hovering over the vertex
-	elt.addEventListener("mouseover", (e) => {
-	    this.muteAll();
-	    this.unmuteVertex(vtx);
-	    this.highlightVertex(vtx);
-	    for (let nbr of vtx.neighbors) {
-		this.highlightVertex(nbr);
-		this.highlightEdge(this.graph.getEdge(vtx, nbr));
-	    }
-	});
+	// elt.addEventListener("mouseover", (e) => {
+	// 	if (!algoRunning ){
+	// 		this.muteAll();
+	// 		this.unmuteVertex(vtx);
+	// 		this.highlightVertex(vtx);
+	// 		for (let nbr of vtx.neighbors) {
+	// 		this.highlightVertex(nbr);
+	// 		this.highlightEdge(this.graph.getEdge(vtx, nbr));
 
-	// define behavior when un-hovering
-	elt.addEventListener("mouseout", (e) => {
-	    this.unmuteAll();
-	    this.unhighlightAll();
-	});
+	// 		}
+	   
+	//     }
+	// });
+
+	// // define behavior when un-hovering
+	// elt.addEventListener("mouseout", (e) => {
+	// 	if (!algoRunning){
+	// 		this.unmuteAll();
+	// 		this.unhighlightAll();
+
+	// 	}
+	// });
 
 	this.vertexGroup.appendChild(elt);
 	this.vertexGroup.appendChild(text);
@@ -628,11 +646,13 @@ function buildSimpleExample () {
 
 
 //input: graph
-//output: minimum spanning tree
+//output: minimum spanning tree 
 async function prim(){
-	gv.unhighlightAll();
+	//gv.unhighlightAll();
 	await sleep(500);
-	
+
+	// if prim is running the mousehovers should not work
+	algoRunning = true;
 	console.log("prim running");
 	let primEdges = []; 
 	
@@ -753,7 +773,8 @@ async function prim(){
 	}
 
 	console.log("final visited: " + visited);
-	costbox.innerHTML += " Minimum Cost using Prim: " + cost;
+	costbox.innerHTML += "<br>Minimum Cost using Prim: " + cost;
+	algoRunning = false;
 	return visited; 
 }
 
@@ -824,6 +845,7 @@ function hasCycle(edge, graph){
 async function kruskal(){
 	gv2.unhighlightAll();
 	await sleep(1000);
+	algoRunning = true;
 
 	console.log("kruskal running");
 	// tracks visited vertices
@@ -903,8 +925,9 @@ async function kruskal(){
 		console.log(mst.edges[i]);
 	}
 	
-	costbox.innerHTML += " Minimum Cost using Kruskal: " + cost;
+	costbox.innerHTML += "Minimum Cost using Kruskal: " + cost;
 	console.log("visited" + visited);
+	algoRunning = false;
 	return visited; 
 }
 
@@ -915,6 +938,7 @@ function reset(){
 	gv.clear();
 	gv2.clear();
 	graph.clear(); 
+	costbox.innerHTML = "";
 
 
 }
@@ -1009,6 +1033,7 @@ btnSimpleGraph.addEventListener("click", function () {
 	gv.clear();
 	gv2.clear();
 	graph.clear(); 
+
     buildSimpleExample(graph); // create a new example 
     gv.drawCircle(true); 
 	gv2.drawCircle(false);
