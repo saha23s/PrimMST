@@ -558,15 +558,19 @@ function GraphVisualizer (graph, svg, text) {
 	// Set layout where vertices are evenly spaced around a circle
     // centered at (cx, cy) with radious r. The order of vertices
     // around the circle is random.
-	this.setLayoutCircle = function (cx, cy, r) {
+	
+	this.setLayoutCircle = function (cx, cy, r, shuffle) {
 		let vertices = this.graph.vertices;
 		let n = vertices.length;
-	
-		for (let i = 1; i < n; i++) {
-			let j = Math.floor(Math.random() * (i + 1));
-			let tmp = vertices[i];
-			vertices[i] = vertices[j];
-			vertices[j] = tmp;
+		
+		// shuffle the vertices if shuffle is true
+		if (shuffle) {
+			for (let i = 1; i < n; i++) {
+				let j = Math.floor(Math.random() * (i + 1));
+				let tmp = vertices[i];
+				vertices[i] = vertices[j];
+				vertices[j] = tmp;
+			}
 		}
 	
 		for (let i = 0; i < n; i++) {
@@ -575,8 +579,8 @@ function GraphVisualizer (graph, svg, text) {
 		}
 	}
 
-	this.drawCircle = function () {
-		this.setLayoutCircle(300, 200, 180);
+	this.drawCircle = function (shuffle) {
+		this.setLayoutCircle(300, 200, 180, shuffle);
 		this.draw();
 	}
 }
@@ -627,7 +631,7 @@ function buildSimpleExample () {
 //output: minimum spanning tree
 async function prim(){
 	gv.unhighlightAll();
-	await sleep(1000);
+	await sleep(500);
 	
 	console.log("prim running");
 	let primEdges = []; 
@@ -681,7 +685,7 @@ async function prim(){
 			}
 			if(!primEdges.includes(graph.edges[i])){
 				gv.highlightEdgePink(graph.edges[i]);
-				await sleep(1000);
+				await sleep(500);
 			}
 		}
 		//enqueue all the edges that are connected to the start vertex 
@@ -696,7 +700,7 @@ async function prim(){
 				console.log("enqueued edge: vtx1- vtx2 - weight  " + graph.edges[i].vtx1.id + " " + graph.edges[i].vtx2.id + " " + graph.edges[i].weight);
 				if(!primEdges.includes(graph.edges[i])){
 					gv.highlightEdgePink(graph.edges[i]);
-					await sleep(1000);
+					await sleep(500);
 				}
 			}
 		}
@@ -710,7 +714,7 @@ async function prim(){
 			//only highlight the min if we are adding it to the cost  --> little off putting and confusing in terms of visualization: 
 	
 			gv.unhighlightAllPinkEdges();
-			await sleep(1000);
+			await sleep(500);
 			// Add the vertices of the dequeued edge to the set of visited vertices
 			if (!visited.includes(minEdge.vtx1.id)) {
 			visited.push(minEdge.vtx1.id);
@@ -723,7 +727,7 @@ async function prim(){
 				costAdd = true;
 				primEdges.push(minEdge);
 				gv.highlightEdge(minEdge);
-				await sleep(1000);
+				await sleep(500);
 			}
 			
 			}
@@ -737,7 +741,7 @@ async function prim(){
 				costAdd = true;
 				primEdges.push(minEdge);
 				gv.highlightEdge(minEdge);
-				await sleep(1000);
+				await sleep(500);
 			}
 			}
 
@@ -749,7 +753,7 @@ async function prim(){
 	}
 
 	console.log("final visited: " + visited);
-	costbox.innerHTML = "Minimum Cost using Prim: " + cost;
+	costbox.innerHTML += " Minimum Cost using Prim: " + cost;
 	return visited; 
 }
 
@@ -818,7 +822,7 @@ function hasCycle(edge, graph){
 // problem with the cost being calculated and need to implement the cycle check thingy 
 //use union find for the cycle check thingy
 async function kruskal(){
-	gv.unhighlightAll();
+	gv2.unhighlightAll();
 	await sleep(1000);
 
 	console.log("kruskal running");
@@ -841,7 +845,7 @@ async function kruskal(){
 	while (graph.edges.length != 0 && !pq.isEmpty() ){
 		// Dequeue the edge with the minimum weight from the priority queue
 		let minEdge = pq.dequeue();
-		gv.highlightEdge(minEdge);
+		gv2.highlightEdge(minEdge);
 		await sleep(1000);
 		console.log("min edge vtx1 - vtx2 - weight: " + minEdge.vtx1.id + " " + minEdge.vtx2.id + " " + minEdge.weight);
 		//check if the edge creates a cycle or not 
@@ -857,7 +861,8 @@ async function kruskal(){
 			// await sleep(1000);
 			// gv.unhighlightAllBlueEdges();
 			// await sleep(1000);
-			gv.unhighlightEdge(removdEdge);
+			//gv.unhighlightEdge(removdEdge);
+			gv2.unhighlightEdge(removdEdge);
 			await sleep(1000);
 
 			continue;
@@ -898,7 +903,7 @@ async function kruskal(){
 		console.log(mst.edges[i]);
 	}
 	
-	costbox.innerHTML = "Minimum Cost using Kruskal: " + cost;
+	costbox.innerHTML += " Minimum Cost using Kruskal: " + cost;
 	console.log("visited" + visited);
 	return visited; 
 }
@@ -908,6 +913,7 @@ function reset(){
 
 	console.log("resetting");
 	gv.clear();
+	gv2.clear();
 	graph.clear(); 
 
 
@@ -987,9 +993,13 @@ class PriorityQueue {
 
 
 const svg = document.querySelector("#graph-box");
+const svg2 = document.querySelector("#graph-box-2");
 const text = document.querySelector("#graph-text-box");
-const graph = new Graph(0);
+let graph = new Graph(0);
+let graph2 = new Graph(1);
+graph2 = graph;
 const gv = new GraphVisualizer(graph, svg, text);
+const gv2 = new GraphVisualizer(graph2, svg2, text);
 const costbox = document.querySelector("#cost");
 
 
@@ -997,7 +1007,9 @@ const btnSimpleGraph = document.querySelector("#btn-simple-graph");
 btnSimpleGraph.addEventListener("click", function () {
 	//if smth in the svg, then clear svg and graph
 	gv.clear();
+	gv2.clear();
 	graph.clear(); 
     buildSimpleExample(graph); // create a new example 
-    gv.drawCircle(); 
+    gv.drawCircle(true); 
+	gv2.drawCircle(false);
 });
