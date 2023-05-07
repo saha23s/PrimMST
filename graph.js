@@ -2,7 +2,7 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 
 // flag to indicate if an algorithm is running
 let algoRunning = false;
-
+let simpleGraph = false;
 
 function Graph(id) {
     this.id = id;            // (unique) ID of this graph
@@ -577,8 +577,8 @@ function GraphVisualizer (graph, svg, text) {
     // centered at (cx, cy) with radious r. The order of vertices
     // around the circle is random.
 	
-	this.setLayoutCircle = function (cx, cy, r, shuffle) {
-		let vertices = this.graph.vertices;
+	this.setLayoutCircle = function (cx, cy, r, shuffle, graph) {
+		let vertices = graph.vertices;
 		let n = vertices.length;
 		
 		// shuffle the vertices if shuffle is true
@@ -592,13 +592,13 @@ function GraphVisualizer (graph, svg, text) {
 		}
 	
 		for (let i = 0; i < n; i++) {
-			this.graph.vertices[i].x = r * Math.cos(2 * Math.PI * i / n) + cx;
-			this.graph.vertices[i].y = r * Math.sin(2 * Math.PI * i / n) + cy;
+			graph.vertices[i].x = r * Math.cos(2 * Math.PI * i / n) + cx;
+			graph.vertices[i].y = r * Math.sin(2 * Math.PI * i / n) + cy;
 		}
 	}
 
-	this.drawCircle = function (shuffle) {
-		this.setLayoutCircle(300, 200, 180, shuffle);
+	this.drawCircle = function (shuffle, graph) {
+		this.setLayoutCircle(300, 200, 180, shuffle, graph);
 		this.draw();
 	}
 }
@@ -611,10 +611,9 @@ return new Promise(resolve => setTimeout(resolve, ms));
 
 
 //build a simple example of a graph
-function buildSimpleExample () { 
+function buildSimpleExample (graph, graph2) { 
 
     vertices = [];
-
 	// randomly generate the vertices while keeping the x and y coordinates within the svg 
 	for (let i = 0; i <= 6; i++) {
 		//making sure that the vertices and edges are not overlapping
@@ -639,6 +638,7 @@ function buildSimpleExample () {
 	graph.addEdge(vertices[4], vertices[6]);
 	graph.addEdge(vertices[4], vertices[5]);
 	graph.addEdge(vertices[5], vertices[6]);
+
     
     
 }
@@ -858,13 +858,13 @@ async function kruskal(){
 	let pq = new PriorityQueue();
 
 	// Enqueue all edges in the graph
-	for (let i = 0; i < graph.edges.length; i++) {
+	for (let i = 0; i < graph2.edges.length; i++) {
 		console.log("enqueuing edges");
-		pq.enqueue(graph.edges[i], graph.edges[i].weight);
+		pq.enqueue(graph2.edges[i], graph2.edges[i].weight);
 	}
 
 	//iterate till all vertices are visited or there are no more edges in the priority queue 
-	while (graph.edges.length != 0 && !pq.isEmpty() ){
+	while (graph2.edges.length != 0 && !pq.isEmpty() ){
 		// Dequeue the edge with the minimum weight from the priority queue
 		let minEdge = pq.dequeue();
 		gv2.highlightEdge(minEdge);
@@ -937,7 +937,9 @@ function reset(){
 	console.log("resetting");
 	gv.clear();
 	gv2.clear();
+	gv_simple.clear();
 	graph.clear(); 
+	graph2.clear();
 	costbox.innerHTML = "";
 
 
@@ -1021,7 +1023,7 @@ const svg2 = document.querySelector("#graph-box-2");
 const text = document.querySelector("#graph-text-box");
 let graph = new Graph(0);
 let graph2 = new Graph(1);
-graph2 = graph;
+
 const gv = new GraphVisualizer(graph, svg, text);
 const gv2 = new GraphVisualizer(graph2, svg2, text);
 const costbox = document.querySelector("#cost");
@@ -1030,11 +1032,11 @@ const costbox = document.querySelector("#cost");
 const btnSimpleGraph = document.querySelector("#btn-simple-graph");
 btnSimpleGraph.addEventListener("click", function () {
 	//if smth in the svg, then clear svg and graph
+	const gv_simple = new GraphVisualizer(graph, svg2, text);
 	gv.clear();
-	gv2.clear();
+	gv_simple.clear();
 	graph.clear(); 
-
     buildSimpleExample(graph); // create a new example 
-    gv.drawCircle(true); 
-	gv2.drawCircle(false);
+    gv.drawCircle(true, graph); 
+	gv_simple.drawCircle(false, graph);
 });
