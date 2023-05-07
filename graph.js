@@ -682,6 +682,7 @@ async function prim(){
 			if ( graph.vertices[i].id == startVertex){
 				startVertex = graph.vertices[i];
 				visited.push(graph.vertices[i].id);
+				gv.highlightVertex(startVertex);
 				break; 
 			}
 			else if ( i == graph.vertices.length - 1){
@@ -741,6 +742,7 @@ async function prim(){
 			console.log("just pushed ids " +  minEdge.vtx1.id);
 			console.log("visited ids: " + visited);  
 			startVertex  = minEdge.vtx1; 
+			gv.highlightVertex(startVertex);
 			console.log( "startvertex: " + startVertex.id); 
 			if (costAdd == false){
 				cost += parseInt(minEdge.weight);
@@ -754,6 +756,7 @@ async function prim(){
 			if (!visited.includes(minEdge.vtx2.id)) {
 			visited.push(minEdge.vtx2.id);
 			startVertex  = minEdge.vtx2;
+			gv.highlightVertex(startVertex);
 			console.log("just pushed pt2 " +  minEdge.vtx1.id);
 			console.log("visited pt2 : " + visited);  
 			if (costAdd == false){
