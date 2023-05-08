@@ -1,6 +1,8 @@
-//TO_DO: kruskal 
-
 const SVG_NS = "http://www.w3.org/2000/svg";
+
+// flag to indicate if an algorithm is running
+let algoRunning = false;
+let simpleGraph = false;
 
 function Graph(id) {
     this.id = id;            // (unique) ID of this graph
@@ -30,28 +32,31 @@ function Graph(id) {
     // create and return an edge between vertices vtx1 and vtx2;
     // returns existing edge if there is already an edge between the
     // two vertices
-
 	this.addEdgeUser = function(vtx1, vtx2) {
-	if (!this.isEdge(vtx1, vtx2)) {
-		const weight = prompt("Enter weightage for edge (" + vtx1.id + ", " + vtx2.id + "):");
-	    const edge = new Edge(vtx1, vtx2, this.nextEdgeID, parseInt(weight));
-	    this.nextEdgeID++;
-	    vtx1.addNeighbor(vtx2);
-	    vtx2.addNeighbor(vtx1);
+	if (!this.isEdge(vtx1, vtx2) && !algoRunning) {
+		
+			const weight = prompt("Enter weightage for edge (" + vtx1.id + ", " + vtx2.id + "):");
+			const edge = new Edge(vtx1, vtx2, this.nextEdgeID, parseInt(weight));
+			this.nextEdgeID++;
+			vtx1.addNeighbor(vtx2);
+			vtx2.addNeighbor(vtx1);
+			
+			if ( weight == null || weight == "" || isNaN(weight) || weight < 0) {
+				return; 
+			}
 
-		if ( weight == null || weight == "" || isNaN(weight) || weight < 0) {
-			return; 
-		}
+			this.edges.push(edge);
+			console.log("added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight);
+			// Update weightage paragraph
+			const weightageParagraph = document.getElementById("weightage-paragraph");
+			const existingContent = weightageParagraph.innerHTML;
+			const newContent = existingContent + "<br>Added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight;
+			weightageParagraph.innerHTML = newContent;
+			
+			return edge;
 
-	    this.edges.push(edge);
-	    console.log("added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight);
-		// Update weightage paragraph
-		const weightageParagraph = document.getElementById("weightage-paragraph");
-		const existingContent = weightageParagraph.innerHTML;
-		const newContent = existingContent + "<br>Added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight;
-		weightageParagraph.innerHTML = newContent;
-	    
-		return edge;
+		
+		
 	} else {
 	    console.log("edge (" + vtx1.id + ", " + vtx2.id + ") not added because it is already in the graph");
 	    return null;
@@ -217,8 +222,13 @@ function GraphVisualizer (graph, svg, text) {
 
     // define the behavior for clicking on the svg element
     this.svg.addEventListener("click", (e) => {
-	// create a new vertex
-	this.createVertex(e);
+	// create a new vertex 
+	if (!algoRunning){
+		this.createVertex(e);
+	}else {
+		console.log("MST algorithm is running, cannot add vertex");
+	}
+	
     });
 
     // sets of highlighted/muted vertices and edges
@@ -281,6 +291,7 @@ function GraphVisualizer (graph, svg, text) {
 		this.addVertex(vtx);
 		this.graph.addVertex(vtx);
 		this.updateTextBox(graph.adjacencyLists());
+
     }
 
     // add a vertex to the visualization by creating an svg element
@@ -308,21 +319,28 @@ function GraphVisualizer (graph, svg, text) {
 	});
 
 	// define behavior when hovering over the vertex
-	elt.addEventListener("mouseover", (e) => {
-	    this.muteAll();
-	    this.unmuteVertex(vtx);
-	    this.highlightVertex(vtx);
-	    for (let nbr of vtx.neighbors) {
-		this.highlightVertex(nbr);
-		this.highlightEdge(this.graph.getEdge(vtx, nbr));
-	    }
-	});
+	// elt.addEventListener("mouseover", (e) => {
+	// 	if (!algoRunning ){
+	// 		this.muteAll();
+	// 		this.unmuteVertex(vtx);
+	// 		this.highlightVertex(vtx);
+	// 		for (let nbr of vtx.neighbors) {
+	// 		this.highlightVertex(nbr);
+	// 		this.highlightEdge(this.graph.getEdge(vtx, nbr));
 
-	// define behavior when un-hovering
-	elt.addEventListener("mouseout", (e) => {
-	    this.unmuteAll();
-	    this.unhighlightAll();
-	});
+	// 		}
+	   
+	//     }
+	// });
+
+	// // define behavior when un-hovering
+	// elt.addEventListener("mouseout", (e) => {
+	// 	if (!algoRunning){
+	// 		this.unmuteAll();
+	// 		this.unhighlightAll();
+
+	// 	}
+	// });
 
 	this.vertexGroup.appendChild(elt);
 	this.vertexGroup.appendChild(text);
@@ -559,8 +577,8 @@ function GraphVisualizer (graph, svg, text) {
     // centered at (cx, cy) with radious r. The order of vertices
     // around the circle is random.
 	
-	this.setLayoutCircle = function (cx, cy, r, shuffle) {
-		let vertices = this.graph.vertices;
+	this.setLayoutCircle = function (cx, cy, r, shuffle, graph) {
+		let vertices = graph.vertices;
 		let n = vertices.length;
 		
 		// shuffle the vertices if shuffle is true
@@ -574,13 +592,13 @@ function GraphVisualizer (graph, svg, text) {
 		}
 	
 		for (let i = 0; i < n; i++) {
-			this.graph.vertices[i].x = r * Math.cos(2 * Math.PI * i / n) + cx;
-			this.graph.vertices[i].y = r * Math.sin(2 * Math.PI * i / n) + cy;
+			graph.vertices[i].x = r * Math.cos(2 * Math.PI * i / n) + cx;
+			graph.vertices[i].y = r * Math.sin(2 * Math.PI * i / n) + cy;
 		}
 	}
 
-	this.drawCircle = function (shuffle) {
-		this.setLayoutCircle(300, 200, 180, shuffle);
+	this.drawCircle = function (shuffle, graph) {
+		this.setLayoutCircle(300, 200, 180, shuffle, graph);
 		this.draw();
 	}
 }
@@ -593,10 +611,9 @@ return new Promise(resolve => setTimeout(resolve, ms));
 
 
 //build a simple example of a graph
-function buildSimpleExample () { 
+function buildSimpleExample (graph, graph2) { 
 
     vertices = [];
-
 	// randomly generate the vertices while keeping the x and y coordinates within the svg 
 	for (let i = 0; i <= 6; i++) {
 		//making sure that the vertices and edges are not overlapping
@@ -621,6 +638,7 @@ function buildSimpleExample () {
 	graph.addEdge(vertices[4], vertices[6]);
 	graph.addEdge(vertices[4], vertices[5]);
 	graph.addEdge(vertices[5], vertices[6]);
+
     
     
 }
@@ -628,11 +646,13 @@ function buildSimpleExample () {
 
 
 //input: graph
-//output: minimum spanning tree
+//output: minimum spanning tree 
 async function prim(){
-	gv.unhighlightAll();
+	//gv.unhighlightAll();
 	await sleep(500);
-	
+
+	// if prim is running the mousehovers should not work
+	algoRunning = true;
 	console.log("prim running");
 	let primEdges = []; 
 	
@@ -662,6 +682,7 @@ async function prim(){
 			if ( graph.vertices[i].id == startVertex){
 				startVertex = graph.vertices[i];
 				visited.push(graph.vertices[i].id);
+				gv.highlightVertex(startVertex);
 				break; 
 			}
 			else if ( i == graph.vertices.length - 1){
@@ -721,6 +742,7 @@ async function prim(){
 			console.log("just pushed ids " +  minEdge.vtx1.id);
 			console.log("visited ids: " + visited);  
 			startVertex  = minEdge.vtx1; 
+			gv.highlightVertex(startVertex);
 			console.log( "startvertex: " + startVertex.id); 
 			if (costAdd == false){
 				cost += parseInt(minEdge.weight);
@@ -734,6 +756,7 @@ async function prim(){
 			if (!visited.includes(minEdge.vtx2.id)) {
 			visited.push(minEdge.vtx2.id);
 			startVertex  = minEdge.vtx2;
+			gv.highlightVertex(startVertex);
 			console.log("just pushed pt2 " +  minEdge.vtx1.id);
 			console.log("visited pt2 : " + visited);  
 			if (costAdd == false){
@@ -753,7 +776,8 @@ async function prim(){
 	}
 
 	console.log("final visited: " + visited);
-	costbox.innerHTML += " Minimum Cost using Prim: " + cost;
+	costbox.innerHTML += "<br>Minimum Cost using Prim: " + cost;
+	algoRunning = false;
 	return visited; 
 }
 
@@ -821,9 +845,10 @@ function hasCycle(edge, graph){
 
 // problem with the cost being calculated and need to implement the cycle check thingy 
 //use union find for the cycle check thingy
-async function kruskal(){
+async function kruskal(graph2, gv2){
 	gv2.unhighlightAll();
 	await sleep(1000);
+	algoRunning = true;
 
 	console.log("kruskal running");
 	// tracks visited vertices
@@ -836,13 +861,13 @@ async function kruskal(){
 	let pq = new PriorityQueue();
 
 	// Enqueue all edges in the graph
-	for (let i = 0; i < graph.edges.length; i++) {
+	for (let i = 0; i < graph2.edges.length; i++) {
 		console.log("enqueuing edges");
-		pq.enqueue(graph.edges[i], graph.edges[i].weight);
+		pq.enqueue(graph2.edges[i], graph2.edges[i].weight);
 	}
 
 	//iterate till all vertices are visited or there are no more edges in the priority queue 
-	while (graph.edges.length != 0 && !pq.isEmpty() ){
+	while (graph2.edges.length != 0 && !pq.isEmpty() ){
 		// Dequeue the edge with the minimum weight from the priority queue
 		let minEdge = pq.dequeue();
 		gv2.highlightEdge(minEdge);
@@ -903,8 +928,9 @@ async function kruskal(){
 		console.log(mst.edges[i]);
 	}
 	
-	costbox.innerHTML += " Minimum Cost using Kruskal: " + cost;
+	costbox.innerHTML += "Minimum Cost using Kruskal: " + cost;
 	console.log("visited" + visited);
+	algoRunning = false;
 	return visited; 
 }
 
@@ -914,7 +940,10 @@ function reset(){
 	console.log("resetting");
 	gv.clear();
 	gv2.clear();
+	gv_simple.clear();
 	graph.clear(); 
+	graph2.clear();
+	costbox.innerHTML = "";
 
 
 }
@@ -997,19 +1026,34 @@ const svg2 = document.querySelector("#graph-box-2");
 const text = document.querySelector("#graph-text-box");
 let graph = new Graph(0);
 let graph2 = new Graph(1);
-graph2 = graph;
+
 const gv = new GraphVisualizer(graph, svg, text);
 const gv2 = new GraphVisualizer(graph2, svg2, text);
 const costbox = document.querySelector("#cost");
-
+// initialising a variable to store the graph visualisation before the user clicks on the simple graph button
+let saveVis = gv;
+let gv_simple = gv;
 
 const btnSimpleGraph = document.querySelector("#btn-simple-graph");
 btnSimpleGraph.addEventListener("click", function () {
 	//if smth in the svg, then clear svg and graph
 	gv.clear();
-	gv2.clear();
+	saveVis.clear();
+	gv_simple = new GraphVisualizer(graph, svg2, text);
 	graph.clear(); 
     buildSimpleExample(graph); // create a new example 
-    gv.drawCircle(true); 
-	gv2.drawCircle(false);
+    gv.drawCircle(true, graph); 
+	gv_simple.drawCircle(false, graph);
+	saveVis = gv_simple;
+	simpleGraph = true;
+});
+
+const btnKruskal = document.querySelector("#btn-run-kruskal");
+btnSimpleGraph.addEventListener("click", function () {
+	if(simpleGraph){
+		kruskal(graph, gv_simple);
+	}
+	else{
+		kruskal(graph2, gv2);
+	}
 });
