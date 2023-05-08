@@ -1049,7 +1049,7 @@ btnSimpleGraph.addEventListener("click", function () {
 });
 
 const btnKruskal = document.querySelector("#btn-run-kruskal");
-btnSimpleGraph.addEventListener("click", function () {
+btnKruskal.addEventListener("click", function () {
 	if(simpleGraph){
 		kruskal(graph, gv_simple);
 	}
