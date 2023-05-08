@@ -845,7 +845,7 @@ function hasCycle(edge, graph){
 
 // problem with the cost being calculated and need to implement the cycle check thingy 
 //use union find for the cycle check thingy
-async function kruskal(){
+async function kruskal(graph2, gv2){
 	gv2.unhighlightAll();
 	await sleep(1000);
 	algoRunning = true;
@@ -1030,16 +1030,30 @@ let graph2 = new Graph(1);
 const gv = new GraphVisualizer(graph, svg, text);
 const gv2 = new GraphVisualizer(graph2, svg2, text);
 const costbox = document.querySelector("#cost");
-
+// initialising a variable to store the graph visualisation before the user clicks on the simple graph button
+let saveVis = gv;
+let gv_simple = gv;
 
 const btnSimpleGraph = document.querySelector("#btn-simple-graph");
 btnSimpleGraph.addEventListener("click", function () {
 	//if smth in the svg, then clear svg and graph
-	const gv_simple = new GraphVisualizer(graph, svg2, text);
 	gv.clear();
-	gv_simple.clear();
+	saveVis.clear();
+	gv_simple = new GraphVisualizer(graph, svg2, text);
 	graph.clear(); 
     buildSimpleExample(graph); // create a new example 
     gv.drawCircle(true, graph); 
 	gv_simple.drawCircle(false, graph);
+	saveVis = gv_simple;
+	simpleGraph = true;
+});
+
+const btnKruskal = document.querySelector("#btn-run-kruskal");
+btnSimpleGraph.addEventListener("click", function () {
+	if(simpleGraph){
+		kruskal(graph, gv_simple);
+	}
+	else{
+		kruskal(graph2, gv2);
+	}
 });
