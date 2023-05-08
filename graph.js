@@ -48,10 +48,10 @@ function Graph(id) {
 			this.edges.push(edge);
 			console.log("added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight);
 			// Update weightage paragraph
-			const weightageParagraph = document.getElementById("weightage-paragraph");
-			const existingContent = weightageParagraph.innerHTML;
-			const newContent = existingContent + "<br>Added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight;
-			weightageParagraph.innerHTML = newContent;
+			//const weightageParagraph = document.getElementById("weightage-paragraph");
+			//const existingContent = weightageParagraph.innerHTML;
+			// const newContent = existingContent + "<br>Added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight;
+			// weightageParagraph.innerHTML = newContent;
 			
 			return edge;
 
@@ -116,6 +116,7 @@ function Graph(id) {
 	return null;
     }
 
+	//dont want the adjacency list to be printed
     // return a string representation of the adjacency lists of the
     // vertices in this graph
     this.adjacencyLists = function () {
@@ -290,7 +291,7 @@ function GraphVisualizer (graph, svg, text) {
 		const vtx = graph.createVertex(x, y);
 		this.addVertex(vtx);
 		this.graph.addVertex(vtx);
-		this.updateTextBox(graph.adjacencyLists());
+		//this.updateTextBox(graph.adjacencyLists());
 
     }
 
@@ -411,7 +412,7 @@ function GraphVisualizer (graph, svg, text) {
 		edgeElt.classList.add("edge");
 		this.edgeElts[edge.id] = edgeElt;
 		this.edgeGroup.appendChild(edgeElt);
-		this.updateTextBox(this.graph.adjacencyLists());
+		//this.updateTextBox(this.graph.adjacencyLists());
 	
 		const weightElt = document.createElementNS(SVG_NS, "g");
 		const weightRect = document.createElementNS(SVG_NS, "rect");
@@ -823,6 +824,7 @@ function hasCycle(edge, graph){
 				if (visited[graph.edges[i].vtx1.id] && visited[graph.edges[i].vtx2.id] ){
 					cycle = true;
 					console.log("cycle found");
+
 					return true;
 				}
 				else if ( !visited[graph.edges[i].vtx1.id] ){
