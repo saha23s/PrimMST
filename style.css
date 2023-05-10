@@ -4,16 +4,13 @@ body{
     color: black;
     margin: 0; 
     padding: 0;
-    
     font-family: 'Times New Roman', Times, serif;
     font-size: 20px;
 
-
-
 }
 
-#interactive{
-    
+
+#interactive{    
     margin: 0 auto;
     margin-top: 20px;
     width: 20%;
@@ -25,13 +22,16 @@ body{
     justify-content: center;
     align-items: center;
     flex-direction: column;
-
     color: black;
     font-size: 20px;
     font-family: 'Times New Roman', Times, serif;
     background-color: #a9969b;
-    
 
+}
+
+#interactive:hover{
+    background-color: #e6e6e6;
+    color: black;
 }
 
 /* //add styling for all buttons */
@@ -75,7 +75,6 @@ button:hover{
 
 
 #user-manual{
-    /* //put everything in a box and change the color & font  */
   
     margin: 0 auto;
     margin-top: 20px;
@@ -169,7 +168,6 @@ svg {
 }
 
 #input-box{
-    /* margin: 0 auto; */
     margin-top: 10px; 
     margin-left: 20px;
     width: 18%;
@@ -187,12 +185,10 @@ svg {
 }
 
 #button-box {
-    /* //put the button in center  */
     display: flex;
     justify-content: center;
     position: relative;
     margin-right: 150px;
-    /* // put it on the right  */
     float: right;
 
 }
@@ -203,11 +199,9 @@ svg {
     margin-top: 20px;
   }
   
-  #btn-simple-graph {
+#btn-simple-graph {
     margin-right: 10px;
-  }
-
-  
+}
 
 
 #headline{
