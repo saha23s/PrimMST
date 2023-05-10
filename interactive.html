@@ -10,7 +10,7 @@
     <div id=root>
       <h2>Visualizing Prim's and Kruskal's Algorithm to create a Minimum Spanning Tree</h2>
       <div id = "user-manual">
-      <p><strong id = "headline">User Manual:</strong> 
+      <p><strong id = "headline1">User Manual:</strong> 
           <br> ~ Click on the box below to add vertices and edges.
           <br> ~ Click on 'Add a Graph' to add a graph on the screen and run any visualization you want.
           <br> ~ Click on 'Clear Graph' to clear the svg box.
@@ -19,12 +19,10 @@
           <br> ~ You can run both algorithms at the same time to compare the process. 
           <br> ~ The cost of the MST will be displayed above the svg box.
       </p>
-      <p> <strong id = "headline">How to understand the visualization:</strong>
+      <p> <strong id = "headline2">How to understand the visualization:</strong>
         <br> ~ The mustard edges are the ones that the algorithm is checking for and the blue edges are the edges that build the MST.
-        <br> ~ The number with the circle are the vertices and the number in the rectangle are the weights of the edges.
-          
+        <br> ~ The number with the circle are the vertices and the number in the rectangle are the weights of the edges.      
       </p>
-
     </div>
 
     <p id="cost"></p>
@@ -36,7 +34,7 @@
           </svg>
           <br>
           <input type="number" id="input-box" placeholder="Enter start vertex for Prim" >
-          <button onclick="prim()" id="button-box">Run Prim</button>
+          <button onclick="prim()" id="btn-run-prim">Run Prim</button>
       </div>
       <div>
         <svg id="graph-box-2" xmlns="http://www.w3.org/2000/svg" width="600" height="400">
@@ -48,8 +46,8 @@
     </div>
 
     <div id="center-buttons">
-      <button id="btn-simple-graph" id="button-box1">Add a graph</button>
-      <button onclick="reset()" id="button-box1">Clear Graph</button> 
+      <button id="btn-simple-graph" >Add a graph</button>
+      <button onclick="reset()" >Clear Graph</button> 
     </div>
     <p id="graph-text-box"></p>
     <p id="weightage-paragraph"></p> 

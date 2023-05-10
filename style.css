@@ -135,36 +135,14 @@ svg {
 }
 
 
-.muted {
-    stroke: rgb(200,200,200);
-}
-
 .highlight {
     stroke: blue;
     stroke-width: 5;
 }
 
-.highlight-pink {
+.highlight-brown {
     stroke: #bd924c;
     stroke-width: 5;
-}
-
-.highlight-blue {
-    stroke: blue;
-    stroke-width: 5;
-}
-
-.overlay-vertex {
-    
-    stroke: yellow;
-    fill: rgb(0, 0, 0, 20%);
-    stroke-width: 5;
-    transition-property: cx, cy;
-    transition-duration: 500ms;
-    
-    /* some options: ease (default), ease-in, ease-out, ease-in-out, linear*/
-    transition-timing-function: linear;
-    /* transition-delay: 500ms; */
 }
 
 #input-box{
@@ -184,7 +162,7 @@ svg {
     
 }
 
-#button-box {
+#btn-run-prim {
     display: flex;
     justify-content: center;
     position: relative;
@@ -204,7 +182,14 @@ svg {
 }
 
 
-#headline{
+#headline1{
+    text-align: center;
+    font-size: 23px;
+    font-family: 'Times New Roman', Times, serif;
+    color: black;
+}
+
+#headline2{
     text-align: center;
     font-size: 23px;
     font-family: 'Times New Roman', Times, serif;
@@ -322,10 +307,6 @@ svg {
         font-family: Arial;
       }
       
-      .muted {
-        stroke: rgb(200, 200, 200);
-      }
-      
       .highlight {
         stroke: blue;
         stroke-width: 5;
@@ -336,16 +317,7 @@ svg {
         stroke-width: 5;
       }
       
-      .highlight-blue {
-        stroke: blue;
-        stroke-width: 5;
-      }
       
-      .overlay-vertex {
-        stroke: yellow;
-        fill: rgb(0, 0, 0, 20%);
-        stroke-width: 5;
-      }
       
       #input-box{
         margin: 0 auto;
@@ -364,7 +336,7 @@ svg {
         left: 0;
     }
     
-    #button-box {
+    #btn-run-prim {
         position: relative;
         margin-right: 20px;
     }
@@ -380,7 +352,13 @@ svg {
         margin-right: 10px;
       }
       
-      #headline {
+      #headline1 {
+        text-align: center;
+        font-size: 23px;
+        font-family: 'Times New Roman', Times, serif;
+        color: black;
+      } 
+      #headline2 {
         text-align: center;
         font-size: 23px;
         font-family: 'Times New Roman', Times, serif;

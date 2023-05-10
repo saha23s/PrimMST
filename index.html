@@ -7,16 +7,14 @@
   </head>
   <body>
     <div id="root">
-       
         <h1>Team Ctrl Alt Dlt</h1>
         <h2>Team members:</h2>
         Marima Fatima<br>Ramisa Tahsin Rahman<br>Sulagna Saha
     </div>
     <h2>Topic: Minimum Spanning Tree</h2>
     <div id="explanation">
-        
         <p>Minimum spanning tree(mst) is a tree in a graph that connects all the vertices together with the minimum possible total edge weight. 
-            It is a subgraph of the original graph. It is used in many applications such as network design, circuit design, clustering, etc.
+        It is a subgraph of the original graph. It is used in many applications such as network design, circuit design, clustering, etc.
         MST application goes beyond computer science such as fintech, economics, chemistry, etc. Some applications that motivated us to work on MST are: 
     <ul>
         <li>It is used in network design to find the most efficient way to connect nodes in a network while minimizing the cost of constructing the connections.</li>
@@ -32,7 +30,7 @@
     <p>Kruskal's algorithm is a greedy algorithm that finds a minimum spanning tree for a weighted undirected graph. 
         It finds a subset of the edges that forms a tree that includes every vertex, where the total weight of all the edges in the tree is minimized.
         It sorts the edges by weight and progressively adds them to the growing forest, taking care not to add any edges that would create a cycle.
-        </p>
+    </p>
     <button id="interactive" onclick="window.location.href='interactive.html'">Go to interactive page</button>
     <h3>Techincal Development of our website:</h3>
     <p>
@@ -41,8 +39,8 @@
         <ul>
             <li>Adjacency List to keep note of the neighbors of the vertices.</li>
             <li>Priority Queue using minheap.</li>
-            <li>Disjoint Set to keep track of visited vertices.</li>
-
+            <li>Set to keep track of visited vertices.</li>
+            <li>Breadth First Search(BFS) to detect a cycle </li>
         </ul>
    
     <h3>References:</h3>
@@ -52,9 +50,5 @@
         <li> <a href="https://www.cs.usfca.edu/~galles/visualization/Kruskal.html">Kruskal's Algorithm Visualization</a></li>
     </ul>
     </div>
-
-    
-
-   
   </body>
 </html>
