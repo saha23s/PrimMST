@@ -133,8 +133,6 @@ svg {
     font-size: 17px;
     font-family: Arial;
 
-    /* fill: black; */
-    /* background-color: #fff; */
 }
 
 
@@ -156,10 +154,6 @@ svg {
     stroke: blue;
     stroke-width: 5;
 }
-
-/*************************************************************
- * NEW SINCE LECTURE 08
- *************************************************************/
 
 .overlay-vertex {
     
@@ -197,13 +191,6 @@ svg {
 
 }
 
-/* #button-box1{ */
-    /* text-align: center; */
-    /* display: block; */
-    /* position: absolute; */
-    /* position: relative; */
-    /* right: 10%; */
-/* } */
 #button-box1{
     position: sticky;
     right: 50%;
@@ -211,15 +198,10 @@ svg {
 }
 
 #button-box{
-    /* left: -100px; */
     position: sticky;
     right: 63%;
 }
 
-/* #button-box2{
-    position: relative;
-    left: 8%;
-} */
 
 
 
