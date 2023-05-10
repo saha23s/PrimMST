@@ -828,6 +828,7 @@ function hasCycle(edge, graph){
 //use union find for the cycle check thingy
 async function kruskal(graph2, gv2){
 	gv2.unhighlightAll();
+	
 	await sleep(1000);
 	algoRunning = true;
 
@@ -902,7 +903,7 @@ async function kruskal(graph2, gv2){
 		console.log(mst.edges[i]);
 	}
 	
-	costbox.innerHTML += "Minimum Cost using Kruskal: " + cost;
+	costbox.innerHTML += "<br>Minimum Cost using Kruskal: " + cost;
 	console.log("visited" + visited);
 	algoRunning = false;
 	return visited; 
@@ -918,7 +919,6 @@ function reset(){
 	graph.clear(); 
 	graph2.clear();
 	costbox.innerHTML = "";
-
 
 }
 

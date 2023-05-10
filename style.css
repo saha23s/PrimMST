@@ -169,8 +169,9 @@ svg {
 }
 
 #input-box{
-    margin: 0 auto;
-    margin-top: 20px;
+    /* margin: 0 auto; */
+    margin-top: 10px; 
+    margin-left: 20px;
     width: 18%;
     text-align: left;
     border: black dotted 1px;
@@ -181,13 +182,19 @@ svg {
     font-size: 20px;
     font-family: 'Times New Roman', Times, serif;
     background-color: #c3cb92;
-    position: absolute;
-    left: 0;
+    position: absolute ; 
+    
 }
 
 #button-box {
+    /* //put the button in center  */
+    display: flex;
+    justify-content: center;
     position: relative;
-    margin-right: 20px;
+    margin-right: 150px;
+    /* // put it on the right  */
+    float: right;
+
 }
 #center-buttons {
     display: flex;
@@ -201,10 +208,7 @@ svg {
   }
 
   
-  
-  
 
- 
 
 #headline{
     text-align: center;
@@ -213,15 +217,7 @@ svg {
     color: black;
 }
 
-#cycle{
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    
 
-}
 
 
 
