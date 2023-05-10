@@ -627,10 +627,7 @@ function buildSimpleExample (graph, graph2) {
 //input: graph
 //output: minimum spanning tree 
 async function prim(){
-<<<<<<< Updated upstream
 	gv.unhighlightAll();
-=======
->>>>>>> Stashed changes
 	await sleep(500);
 
 	// if prim is running the mousehovers should not work
