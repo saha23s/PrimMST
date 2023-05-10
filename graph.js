@@ -52,7 +52,7 @@ function Graph(id) {
 			//const existingContent = weightageParagraph.innerHTML;
 			// const newContent = existingContent + "<br>Added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight;
 			// weightageParagraph.innerHTML = newContent;
-			
+
 			return edge;
 
 		
@@ -293,6 +293,7 @@ function GraphVisualizer (graph, svg, text) {
 		this.graph.addVertex(vtx);
 		//this.updateTextBox(graph.adjacencyLists());
 
+
     }
 
     // add a vertex to the visualization by creating an svg element
@@ -319,28 +320,9 @@ function GraphVisualizer (graph, svg, text) {
 			this.clickVertex(vtx);
 	});
 
-	// define behavior when hovering over the vertex
-	// elt.addEventListener("mouseover", (e) => {
-	// 	if (!algoRunning ){
-	// 		this.muteAll();
-	// 		this.unmuteVertex(vtx);
-	// 		this.highlightVertex(vtx);
-	// 		for (let nbr of vtx.neighbors) {
-	// 		this.highlightVertex(nbr);
-	// 		this.highlightEdge(this.graph.getEdge(vtx, nbr));
-
-	// 		}
-	   
-	//     }
-	// });
-
-	// // define behavior when un-hovering
 	// elt.addEventListener("mouseout", (e) => {
-	// 	if (!algoRunning){
-	// 		this.unmuteAll();
-	// 		this.unhighlightAll();
-
-	// 	}
+	//     this.unmuteAll();
+	//     this.unhighlightAll();
 	// });
 
 	this.vertexGroup.appendChild(elt);
@@ -649,7 +631,7 @@ function buildSimpleExample (graph, graph2) {
 //input: graph
 //output: minimum spanning tree 
 async function prim(){
-	//gv.unhighlightAll();
+	gv.unhighlightAll();
 	await sleep(500);
 
 	// if prim is running the mousehovers should not work

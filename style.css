@@ -90,31 +90,6 @@ button:hover{
     background-color: #e4b7b8;
 
 }
-#input-box{
-    margin: 0 auto;
-    margin-top: 20px;
-    width: 18%;
-    text-align: center;
-    border: black dotted 1px;
-    padding: 10px;
-    display: flex;
-    
-    align-items: center;
-    flex-direction: column;
-    color: black;
-    font-size: 20px;
-    font-family: 'Times New Roman', Times, serif;
-    background-color: #c3cb92;
-    
-
-}
-
-#run-prim{
-
-    
-
-}
-
 
 #explanation{
     margin: 0 auto;
@@ -200,12 +175,51 @@ svg {
 }
 
 #input-box{
-    
     margin: 0 auto;
     margin-top: 20px;
+    width: 18%;
+    text-align: left;
+    border: black dotted 1px;
+    padding: 10px;
+    display: flex;
+    
+    align-items: center;
+    flex-direction: column;
+    color: black;
+    font-size: 20px;
+    font-family: 'Times New Roman', Times, serif;
+    background-color: #c3cb92;
 
+    display: inline-block;
+    /* position: relative; */
+    position: sticky;
+    right: 73%;
 
 }
+
+/* #button-box1{ */
+    /* text-align: center; */
+    /* display: block; */
+    /* position: absolute; */
+    /* position: relative; */
+    /* right: 10%; */
+/* } */
+#button-box1{
+    position: sticky;
+    right: 50%;
+
+}
+
+#button-box{
+    /* left: -100px; */
+    position: sticky;
+    right: 63%;
+}
+
+/* #button-box2{
+    position: relative;
+    left: 8%;
+} */
 
 
 
