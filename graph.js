@@ -23,9 +23,9 @@ function Graph(id) {
     this.addVertex = function (vtx) {
 	if (!this.vertices.includes(vtx)) {
 	    this.vertices.push(vtx);
-	    console.log("added vertex with id " + vtx.id);
+	    // console.log("added vertex with id " + vtx.id);
 	} else {
-	    console.log("vertex with id " + vtx.id + " not added because it is already a vertex in the graph.");
+	    // console.log("vertex with id " + vtx.id + " not added because it is already a vertex in the graph.");
 	}
     }
 
@@ -46,7 +46,7 @@ function Graph(id) {
 			}
 
 			this.edges.push(edge);
-			console.log("added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight);
+			// console.log("added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight);
 			// Update weightage paragraph
 			//const weightageParagraph = document.getElementById("weightage-paragraph");
 			//const existingContent = weightageParagraph.innerHTML;
@@ -58,7 +58,7 @@ function Graph(id) {
 		
 		
 	} else {
-	    console.log("edge (" + vtx1.id + ", " + vtx2.id + ") not added because it is already in the graph");
+	    // console.log("edge (" + vtx1.id + ", " + vtx2.id + ") not added because it is already in the graph");
 	    return null;
 	}
     }
@@ -72,11 +72,11 @@ function Graph(id) {
 			vtx1.addNeighbor(vtx2);
 			vtx2.addNeighbor(vtx1);
 			this.edges.push(edge);
-			console.log("added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight);
+			// console.log("added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight);
 			
 			return edge;
 		} else {
-			console.log("edge (" + vtx1.id + ", " + vtx2.id + ") not added because it is already in the graph");
+			// console.log("edge (" + vtx1.id + ", " + vtx2.id + ") not added because it is already in the graph");
 			return null;
 		}
 		}
@@ -91,10 +91,10 @@ function Graph(id) {
 			vtx1.addNeighbor(vtx2);
 			vtx2.addNeighbor(vtx1);
 			this.edges.push(edge);
-			console.log("added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight);
+			// console.log("added edge (" + vtx1.id + ", " + vtx2.id + ") with weightage " + weight);
 			return edge;
 		} else {
-			console.log("edge (" + vtx1.id + ", " + vtx2.id + ") not added because it is already in the graph");
+			// console.log("edge (" + vtx1.id + ", " + vtx2.id + ") not added because it is already in the graph");
 			return null;
 		}
 	}
@@ -227,7 +227,7 @@ function GraphVisualizer (graph, svg, text) {
 	if (!algoRunning){
 		this.createVertex(e);
 	}else {
-		console.log("MST algorithm is running, cannot add vertex");
+		// console.log("MST algorithm is running, cannot add vertex");
 	}
 	
     });
@@ -501,7 +501,7 @@ function GraphVisualizer (graph, svg, text) {
     }
 
     this.unhighlightAll = function () {
-	console.log("unhighlighting all");
+	//console.log("unhighlighting all");
 	this.unhighlightAllVertices();
 	this.unhighlightAllEdges();
     }
@@ -607,10 +607,6 @@ function buildSimpleExample (graph, graph2) {
 		graph.addVertex(vtx);
 	}
 
-
-
-
-	// //made changes in how the graph looks
 	graph.addEdge(vertices[0], vertices[2]); 
 	graph.addEdge(vertices[0], vertices[1]); 
 	graph.addEdge(vertices[1], vertices[3]);
@@ -631,17 +627,18 @@ function buildSimpleExample (graph, graph2) {
 //input: graph
 //output: minimum spanning tree 
 async function prim(){
+<<<<<<< Updated upstream
 	gv.unhighlightAll();
+=======
+>>>>>>> Stashed changes
 	await sleep(500);
 
 	// if prim is running the mousehovers should not work
 	algoRunning = true;
-	console.log("prim running");
 	let primEdges = []; 
 	
 	//fetch user input from the html page
 	let startVertex = document.getElementById("input-box").value;
-	console.log(startVertex);
 	
 	if (graph.vertices.length == 0){
 		alert("Add vertices first");
@@ -679,8 +676,8 @@ async function prim(){
 	let pq = new PriorityQueue();
 	let set = new Set();
 
-	//should not run: if the edge set is empty or if all the vertices have been visited
-	while ( graph.edges.length != 0 && visited.length < graph.vertices.length ){
+	//should not run: if the edge set is empty or if if all the vertices have been visited
+	while ( graph.edges.length != 0  && visited.length < graph.vertices.length ){
 		console.log("enqueuing edges");
 		for (let i = 0 ; i< set.size; i++){
 			//to-do: if it is highlighted, dont highlightPink it: add any highlighted one in the array and then cross - check
@@ -701,7 +698,7 @@ async function prim(){
 				}
 				pq.enqueue(graph.edges[i], graph.edges[i].weight);
 				set.add(graph.edges[i]);
-				console.log("enqueued edge: vtx1- vtx2 - weight  " + graph.edges[i].vtx1.id + " " + graph.edges[i].vtx2.id + " " + graph.edges[i].weight);
+				//console.log("enqueued edge: vtx1- vtx2 - weight  " + graph.edges[i].vtx1.id + " " + graph.edges[i].vtx2.id + " " + graph.edges[i].weight);
 				if(!primEdges.includes(graph.edges[i])){
 					gv.highlightEdgePink(graph.edges[i]);
 					await sleep(500);
@@ -714,7 +711,7 @@ async function prim(){
 		if ( !pq.isEmpty() ){ //- this considition is never used since we always break out of the loop but anyways 
 			// Dequeue the edge with the minimum weight from the priority queue
 			let minEdge = pq.dequeue();
-			console.log("min edge vtx1 - vtx2 - weight: " + minEdge.vtx1.id + " " + minEdge.vtx2.id + " " + minEdge.weight);
+			//console.log("min edge vtx1 - vtx2 - weight: " + minEdge.vtx1.id + " " + minEdge.vtx2.id + " " + minEdge.weight);
 			//only highlight the min if we are adding it to the cost  --> little off putting and confusing in terms of visualization: 
 	
 			gv.unhighlightAllPinkEdges();
@@ -722,11 +719,11 @@ async function prim(){
 			// Add the vertices of the dequeued edge to the set of visited vertices
 			if (!visited.includes(minEdge.vtx1.id)) {
 			visited.push(minEdge.vtx1.id);
-			console.log("just pushed ids " +  minEdge.vtx1.id);
-			console.log("visited ids: " + visited);  
+			// console.log("just pushed ids " +  minEdge.vtx1.id);
+			// console.log("visited ids: " + visited);  
 			startVertex  = minEdge.vtx1; 
 			gv.highlightVertex(startVertex);
-			console.log( "startvertex: " + startVertex.id); 
+			//console.log( "startvertex: " + startVertex.id); 
 			if (costAdd == false){
 				cost += parseInt(minEdge.weight);
 				costAdd = true;
@@ -740,8 +737,8 @@ async function prim(){
 			visited.push(minEdge.vtx2.id);
 			startVertex  = minEdge.vtx2;
 			gv.highlightVertex(startVertex);
-			console.log("just pushed pt2 " +  minEdge.vtx1.id);
-			console.log("visited pt2 : " + visited);  
+			// console.log("just pushed pt2 " +  minEdge.vtx1.id);
+			// console.log("visited pt2 : " + visited);  
 			if (costAdd == false){
 				cost += parseInt(minEdge.weight);
 				costAdd = true;
@@ -753,12 +750,12 @@ async function prim(){
 
 			// Add the weight of the dequeued edge to the cost
 			costAdd = false;
-			console.log("cost: " + cost);
+			//console.log("cost: " + cost);
 			// break ; 
 		}
 	}
 
-	console.log("final visited: " + visited);
+	//console.log("final visited: " + visited);
 	costbox.innerHTML += "<br>Minimum Cost using Prim: " + cost;
 	algoRunning = false;
 	return visited; 
@@ -800,12 +797,15 @@ function hasCycle(edge, graph){
 		for (let i = 0; i < graph.edges.length; i++){
 			if (graph.edges[i].vtx1.id == vtx.id || graph.edges[i].vtx2.id == vtx.id){
 				if (set.has(graph.edges[i]) ){
-					console.log("edge already in set");
+					//console.log("edge already in set");
 					continue;
 				}
 				if (visited[graph.edges[i].vtx1.id] && visited[graph.edges[i].vtx2.id] ){
 					cycle = true;
-					console.log("cycle found");
+					//console.log("cycle found");
+					//print it to the screen 
+					cycle.innerHTML += "Cycle found so this edge cannot be added to the MST";
+					
 
 					return true;
 				}
@@ -818,11 +818,11 @@ function hasCycle(edge, graph){
 					visited[graph.edges[i].vtx2.id] = true;
 				}
 				set.add(graph.edges[i]);
-				console.log("adding the edge to the set");
+				//console.log("adding the edge to the set");
 			}
 		}
 	}
-	console.log("cycle: " + "not found");
+	
 	return false;
 	}
 
@@ -834,7 +834,7 @@ async function kruskal(graph2, gv2){
 	await sleep(1000);
 	algoRunning = true;
 
-	console.log("kruskal running");
+	//console.log("kruskal running");
 	// tracks visited vertices
 	let visited = [];
 	var cost = 0;
@@ -846,7 +846,7 @@ async function kruskal(graph2, gv2){
 
 	// Enqueue all edges in the graph
 	for (let i = 0; i < graph2.edges.length; i++) {
-		console.log("enqueuing edges");
+		//console.log("enqueuing edges");
 		pq.enqueue(graph2.edges[i], graph2.edges[i].weight);
 	}
 
@@ -856,21 +856,14 @@ async function kruskal(graph2, gv2){
 		let minEdge = pq.dequeue();
 		gv2.highlightEdge(minEdge);
 		await sleep(1000);
-		console.log("min edge vtx1 - vtx2 - weight: " + minEdge.vtx1.id + " " + minEdge.vtx2.id + " " + minEdge.weight);
+		//console.log("min edge vtx1 - vtx2 - weight: " + minEdge.vtx1.id + " " + minEdge.vtx2.id + " " + minEdge.weight);
 		//check if the edge creates a cycle or not 
 		//if it does, then don't add it to the visited array and don't add the weight to the cost
 		if (hasCycle(minEdge, mst) == true){
-			console.log("cycle detected");
+			//console.log("cycle detected");
 			// have to remove minEdge from the graph
 			
 			let removdEdge = mst.edges.pop();
-			// for(let i = 0; i < mst.edges.length; i++){
-			// 	gv.highlightEdgeBlue(mst.edges[i]);
-			// }
-			// await sleep(1000);
-			// gv.unhighlightAllBlueEdges();
-			// await sleep(1000);
-			//gv.unhighlightEdge(removdEdge);
 			gv2.unhighlightEdge(removdEdge);
 			await sleep(1000);
 
@@ -878,7 +871,7 @@ async function kruskal(graph2, gv2){
 		}
 		//if it doesn't, then add it to the visited array and add the weight to the cost
 		else{
-			console.log("no cycle detected");
+			// console.log("no cycle detected");
 			//check if the vertices of the edge are already in the visited array or not
 			//if they are, then don't add them to the visited array
 			if (visited.includes(minEdge.vtx1.id) && mst.vertices.includes(minEdge.vtx1.id) ){
@@ -897,12 +890,12 @@ async function kruskal(graph2, gv2){
 				mst.vertices.push(minEdge.vtx2.id);
 			}
 			cost += parseInt(minEdge.weight);
-			console.log("cost: " + cost); 
+			//console.log("cost: " + cost); 
 		}
 		
 	}
 	// print mst vertices in a printable way
-	console.log("mst vertices: ");
+	//console.log("mst vertices: ");
 	for (let i = 0; i < mst.vertices.length; i++){
 		console.log(mst.vertices[i]);
 	}
@@ -1014,6 +1007,7 @@ let graph2 = new Graph(1);
 const gv = new GraphVisualizer(graph, svg, text);
 const gv2 = new GraphVisualizer(graph2, svg2, text);
 const costbox = document.querySelector("#cost");
+const cycle = document.querySelector("#cycle");
 // initialising a variable to store the graph visualisation before the user clicks on the simple graph button
 let saveVis = gv;
 let gv_simple = gv;

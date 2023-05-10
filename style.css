@@ -185,6 +185,7 @@ svg {
     left: 0;
 }
 
+<<<<<<< Updated upstream
 #button-box {
     position: relative;
     margin-right: 20px;
@@ -206,6 +207,24 @@ svg {
 
  
 
+=======
+#headline{
+    text-align: center;
+    font-size: 23px;
+    font-family: 'Times New Roman', Times, serif;
+    color: black;
+}
+
+#cycle{
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    
+
+}
+>>>>>>> Stashed changes
 
 
 
