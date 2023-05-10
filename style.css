@@ -212,6 +212,181 @@ svg {
 }
 
 
+/* to handle change in screen size */
+
+@media screen and (max-width: 480px) {
+    /* CSS styles to apply for screens with a maximum width of 480px */
+    body {
+        text-align: center;
+        background-color: #ccc3cc;
+        color: black;
+        margin: 0;
+        padding: 0;
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 20px;
+      }
+      
+      #interactive {
+        margin: 0 auto;
+        margin-top: 20px;
+        width: 90%;
+        text-align: center;
+        border: black dotted 1px;
+        padding: 10px;
+        background-color: #e6e6e6;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        color: black;
+        font-size: 20px;
+        font-family: 'Times New Roman', Times, serif;
+        background-color: #a9969b;
+      }
+      
+      button {
+        margin: 10px;
+        padding: 10px;
+        border: black solid 1px;
+        color: black;
+        font-size: 20px;
+        font-family: 'Times New Roman', Times, serif;
+        background-color: #c3cb92;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+        outline: none;
+      }
+      
+      button:hover {
+        background-color: #e6e6e6;
+        color: black;
+      }
+      
+      #two-svg {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        margin: 0 auto;
+        margin-top: 20px;
+        width: 90%;
+        text-align: center;
+        border: black dotted 1px;
+        padding: 10px;
+        background-color: #e6e6e6;
+        color: black;
+        font-size: 20px;
+        font-family: 'Times New Roman', Times, serif;
+        background-color: #a9969b;
+      }
+      
+      #user-manual {
+        margin: 0 auto;
+        margin-top: 20px;
+        width: 90%;
+        text-align: left;
+        border: black dotted 1px;
+        border-radius: 20px;
+        padding: 10px;
+        color: black;
+        font-size: 20px;
+        font-family: 'Times New Roman', Times, serif;
+        background-color: #e4b7b8;
+      }
+      
+      svg {
+        position: relative;
+        margin: 0 auto;
+        display: block;
+        border: black solid 1px;
+      }
+      
+      .vertex {
+        stroke: black;
+        fill: white;
+        stroke-width: 2;
+      }
+      
+      .vertex:hover {
+        fill: rgb(240, 160, 160);
+      }
+      
+      .edge {
+        stroke: black;
+        stroke-width: 4px;
+      }
+      
+      .weight {
+        font-size: 17px;
+        font-family: Arial;
+      }
+      
+      .muted {
+        stroke: rgb(200, 200, 200);
+      }
+      
+      .highlight {
+        stroke: blue;
+        stroke-width: 5;
+      }
+      
+      .highlight-pink {
+        stroke: #bd924c;
+        stroke-width: 5;
+      }
+      
+      .highlight-blue {
+        stroke: blue;
+        stroke-width: 5;
+      }
+      
+      .overlay-vertex {
+        stroke: yellow;
+        fill: rgb(0, 0, 0, 20%);
+        stroke-width: 5;
+      }
+      
+      #input-box{
+        margin: 0 auto;
+        margin-top: 20px;
+        width: 18%;
+        text-align: left;
+        border: black dotted 1px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        color: black;
+        font-size: 20px;
+        font-family: 'Times New Roman', Times, serif;
+        background-color: #c3cb92;
+        position: absolute;
+        left: 0;
+    }
+    
+    #button-box {
+        position: relative;
+        margin-right: 20px;
+    }
+      
+      #center-buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+      }
+      
+      #btn-simple-graph {
+        margin-right: 10px;
+      }
+      
+      #headline {
+        text-align: center;
+        font-size: 23px;
+        font-family: 'Times New Roman', Times, serif;
+        color: black;
+      } 
+  }
 
 
 
